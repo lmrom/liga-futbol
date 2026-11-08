@@ -1,12 +1,22 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Api } from './services/api';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   selector: 'app-root',
-  styleUrl: './app.css',
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('primera-pagina');
+  api = inject(Api);
+  router = inject(Router);
+
+  constructor() {
+    this.api.cargarSesion(); // Al abrir la página revisamos si ya había sesión
+  }
+
+  async salir() {
+    await this.api.logout();
+    this.router.navigateByUrl('/inicio');
+  }
 }

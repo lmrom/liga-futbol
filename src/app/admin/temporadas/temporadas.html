@@ -1,0 +1,104 @@
+<div class="container py-5">
+  <h2 class="fw-bold text-liga mb-4">Temporadas</h2>
+
+  @if (mensaje()) { <div class="alert alert-success">{{ mensaje() }}</div> }
+  @if (error()) { <div class="alert alert-danger">{{ error() }}</div> }
+
+  <div class="row g-4">
+    <!-- Formulario -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-liga text-white fw-bold">{{ form.id ? 'Editar' : 'Nueva' }} temporada</div>
+        <form class="card-body" (ngSubmit)="guardar()">
+          <label class="form-label">Nombre</label>
+          <input class="form-control mb-2" name="nombre" [(ngModel)]="form.nombre" placeholder="Apertura 2026" required>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Inicio</label>
+              <input type="date" class="form-control mb-2" name="fecha_inicio" [(ngModel)]="form.fecha_inicio" required>
+            </div>
+            <div class="col">
+              <label class="form-label">Fin</label>
+              <input type="date" class="form-control mb-2" name="fecha_fin" [(ngModel)]="form.fecha_fin">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Pts. victoria</label>
+              <input type="number" class="form-control mb-2" name="pv" [(ngModel)]="form.puntos_victoria">
+            </div>
+            <div class="col">
+              <label class="form-label">Pts. empate</label>
+              <input type="number" class="form-control mb-2" name="pe" [(ngModel)]="form.puntos_empate">
+            </div>
+          </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="activa" name="activa" [(ngModel)]="form.activa">
+            <label class="form-check-label" for="activa">Temporada activa</label>
+          </div>
+          <button class="btn btn-liga w-100">Guardar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Lista -->
+    <div class="col-lg-8">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark"><tr><th>Nombre</th><th>Inicio</th><th>Fin</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          @for (t of temporadas(); track t.id) {
+            <tr>
+              <td class="fw-bold">{{ t.nombre }}</td>
+              <td>{{ t.fecha_inicio }}</td>
+              <td>{{ t.fecha_fin ?? '—' }}</td>
+              <td>
+                @if (t.activa == 1) { <span class="badge text-bg-success">Activa</span> }
+                @else { <span class="badge text-bg-secondary">Cerrada</span> }
+              </td>
+              <td class="text-end"><button class="btn btn-sm btn-outline-secondary" (click)="editar(t)">Editar</button></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="text-muted text-center">Aún no hay temporadas.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Equipos de una temporada -->
+  <h4 class="fw-bold text-liga mt-5 mb-3">Equipos inscritos por temporada</h4>
+  <select class="form-select w-auto mb-3" [(ngModel)]="temporadaId" (change)="cargarInscritos()">
+    <option value="">Elige una temporada...</option>
+    @for (t of temporadas(); track t.id) {
+      <option [value]="t.id">{{ t.nombre }}</option>
+    }
+  </select>
+
+  @if (temporadaId) {
+    <form class="row g-2 mb-3" (ngSubmit)="inscribir()">
+      <div class="col-md-5">
+        <select class="form-select" name="equipo" [(ngModel)]="nuevo.equipo_id" required>
+          <option value="">Equipo a inscribir...</option>
+          @for (e of disponibles(); track e.id) {
+            <option [value]="e.id">{{ e.nombre }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-md-3">
+        <input class="form-control" name="grupo" [(ngModel)]="nuevo.grupo" placeholder="Grupo (opcional)">
+      </div>
+      <div class="col-md-2"><button class="btn btn-liga w-100">Inscribir</button></div>
+    </form>
+
+    <ul class="list-group">
+      @for (e of inscritos(); track e.id) {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>{{ e.nombre }} @if (e.grupo) { <span class="badge text-bg-light">Grupo {{ e.grupo }}</span> }</span>
+          <button class="btn btn-sm btn-outline-danger" (click)="quitar(e.id)">Quitar</button>
+        </li>
+      } @empty {
+        <li class="list-group-item text-muted">No hay equipos inscritos en esta temporada.</li>
+      }
+    </ul>
+  }
+</div>

@@ -1,0 +1,38 @@
+<div class="container py-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <h2 class="fw-bold text-liga m-0">Partidos</h2>
+    <select class="form-select w-auto" [(ngModel)]="temporadaId" (change)="cargar()">
+      @for (t of temporadas(); track t.id) {
+        <option [value]="t.id">{{ t.nombre }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle text-center">
+      <thead class="table-dark">
+        <tr>
+          <th>Jornada</th><th>Fecha</th><th class="text-end">Local</th><th>Marcador</th>
+          <th class="text-start">Visitante</th><th>Cancha</th><th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of partidos(); track p.id) {
+          <tr>
+            <td>{{ p.jornada }}</td>
+            <td>{{ p.fecha_hora ? (p.fecha_hora | date: 'dd/MM/yyyy HH:mm') : 'Por definir' }}</td>
+            <td class="text-end fw-bold">{{ p.local }}</td>
+            <td class="fs-5">
+              @if (p.goles_local !== null) { {{ p.goles_local }} - {{ p.goles_visitante }} } @else { vs }
+            </td>
+            <td class="text-start fw-bold">{{ p.visitante }}</td>
+            <td>{{ p.cancha ?? '—' }}</td>
+            <td><span class="badge text-bg-secondary text-capitalize">{{ p.estado }}</span></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7" class="text-muted">Aún no hay partidos programados.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

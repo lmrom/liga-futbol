@@ -1,0 +1,54 @@
+<div class="container py-5">
+  <h2 class="fw-bold text-liga mb-4">Mi equipo</h2>
+
+  @if (info(); as i) {
+    @if (!i.equipo) {
+      <div class="alert alert-info">¡Bienvenida! Registra los datos de tu equipo para poder dar de alta a tus jugadoras.</div>
+    } @else if (i.inscrito) {
+      <div class="alert alert-success">
+        Tu equipo está inscrito en la temporada <strong>{{ i.temporada.nombre }}</strong>.
+        <a routerLink="/delegado/jugadoras" class="alert-link">Administrar jugadoras →</a>
+      </div>
+    } @else {
+      <div class="alert alert-warning">Tu equipo aún no está inscrito en una temporada activa. Contacta a la administración.</div>
+    }
+
+    @if (mensaje()) { <div class="alert alert-success">{{ mensaje() }}</div> }
+    @if (error()) { <div class="alert alert-danger">{{ error() }}</div> }
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-liga text-white fw-bold">Datos del equipo</div>
+      <form class="card-body row g-3" (ngSubmit)="guardar()">
+        <div class="col-md-8">
+          <label class="form-label">Nombre del equipo</label>
+          <input class="form-control" name="nombre" [(ngModel)]="form.nombre" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Nombre corto</label>
+          <input class="form-control" name="nombre_corto" [(ngModel)]="form.nombre_corto" maxlength="20">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Responsable / DT</label>
+          <input class="form-control" name="responsable" [(ngModel)]="form.responsable">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">URL del escudo (opcional)</label>
+          <input class="form-control" name="escudo_url" [(ngModel)]="form.escudo_url">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Teléfono de contacto</label>
+          <input class="form-control" name="telefono" [(ngModel)]="form.telefono_contacto">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Correo de contacto</label>
+          <input type="email" class="form-control" name="correo" [(ngModel)]="form.correo_contacto">
+        </div>
+        <div class="col-12 text-end">
+          <button class="btn btn-liga">{{ i.equipo ? 'Guardar cambios' : 'Registrar equipo' }}</button>
+        </div>
+      </form>
+    </div>
+  } @else {
+    <p class="text-muted">Cargando...</p>
+  }
+</div>

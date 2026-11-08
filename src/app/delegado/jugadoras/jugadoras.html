@@ -1,0 +1,104 @@
+<div class="container py-5">
+  <h2 class="fw-bold text-liga mb-4">Mis jugadoras</h2>
+
+  @if (info(); as i) {
+    @if (!i.inscrito) {
+      <div class="alert alert-warning">
+        Para registrar jugadoras tu equipo debe estar registrado e inscrito en la temporada activa.
+        <a routerLink="/delegado/equipo" class="alert-link">Ir a Mi equipo</a>
+      </div>
+    } @else {
+      <p class="text-muted">{{ i.equipo.nombre }} · Temporada {{ i.temporada.nombre }} · {{ jugadoras().length }} jugadoras</p>
+
+      @if (mensaje()) { <div class="alert alert-success">{{ mensaje() }}</div> }
+      @if (error()) { <div class="alert alert-danger">{{ error() }}</div> }
+
+      <!-- Formulario de jugadora -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-liga text-white fw-bold d-flex justify-content-between">
+          {{ form.plantilla_id ? 'Editar jugadora' : 'Nueva jugadora' }}
+          @if (form.plantilla_id) { <button class="btn btn-sm btn-light" (click)="limpiar()">Cancelar</button> }
+        </div>
+        <form class="card-body row g-2" (ngSubmit)="guardar()">
+          <div class="col-md-4">
+            <label class="form-label">Nombre(s)</label>
+            <input class="form-control" name="nombre" [(ngModel)]="form.nombre" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Apellido paterno</label>
+            <input class="form-control" name="ap" [(ngModel)]="form.apellido_paterno" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Apellido materno</label>
+            <input class="form-control" name="am" [(ngModel)]="form.apellido_materno">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Fecha de nacimiento</label>
+            <input type="date" class="form-control" name="fn" [(ngModel)]="form.fecha_nacimiento" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">CURP</label>
+            <input class="form-control text-uppercase" name="curp" [(ngModel)]="form.curp" maxlength="18">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Teléfono</label>
+            <input class="form-control" name="tel" [(ngModel)]="form.telefono">
+          </div>
+          <div class="col-md-1">
+            <label class="form-label">Dorsal</label>
+            <input type="number" min="0" class="form-control" name="dorsal" [(ngModel)]="form.dorsal">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Posición</label>
+            <select class="form-select" name="posicion" [(ngModel)]="form.posicion">
+              <option value="">—</option>
+              <option>Portera</option>
+              <option>Defensa</option>
+              <option>Medio</option>
+              <option>Delantera</option>
+            </select>
+          </div>
+          <div class="col-md-1 d-flex align-items-end">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="cap" name="capitana" [(ngModel)]="form.capitana">
+              <label class="form-check-label" for="cap">Capitana</label>
+            </div>
+          </div>
+          <div class="col-12 text-end"><button class="btn btn-liga">Guardar jugadora</button></div>
+        </form>
+      </div>
+
+      <!-- Lista -->
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-dark">
+            <tr><th>#</th><th>Nombre</th><th>Posición</th><th>Nacimiento</th><th>CURP</th><th>Teléfono</th><th></th></tr>
+          </thead>
+          <tbody>
+            @for (j of jugadoras(); track j.plantilla_id) {
+              <tr>
+                <td class="fw-bold">{{ j.dorsal ?? '—' }}</td>
+                <td>
+                  {{ j.nombre }} {{ j.apellido_paterno }} {{ j.apellido_materno }}
+                  @if (j.capitana == 1) { <span class="badge bg-liga">C</span> }
+                </td>
+                <td>{{ j.posicion ?? '—' }}</td>
+                <td>{{ j.fecha_nacimiento }}</td>
+                <td>{{ j.curp ?? '—' }}</td>
+                <td>{{ j.telefono ?? '—' }}</td>
+                <td class="text-end text-nowrap">
+                  <button class="btn btn-sm btn-outline-secondary" (click)="editar(j)">Editar</button>
+                  <button class="btn btn-sm btn-outline-danger ms-1" (click)="baja(j)">Baja</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="7" class="text-muted text-center">Aún no has registrado jugadoras.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  } @else {
+    <p class="text-muted">Cargando...</p>
+  }
+</div>

@@ -1,0 +1,148 @@
+<div class="container py-5">
+  <a routerLink="/admin/partidos" class="btn btn-sm btn-outline-secondary mb-3">← Volver a partidos</a>
+
+  @if (partido(); as p) {
+    <h2 class="fw-bold text-liga">Jornada {{ p.jornada }}: {{ p.local }} vs {{ p.visitante }}</h2>
+
+    @if (mensaje()) { <div class="alert alert-success">{{ mensaje() }}</div> }
+    @if (error()) { <div class="alert alert-danger">{{ error() }}</div> }
+
+    <!-- Resultado -->
+    <div class="card shadow-sm my-4">
+      <div class="card-header bg-liga text-white fw-bold">Resultado (hoja del árbitro)</div>
+      <form class="card-body row g-3 align-items-end" (ngSubmit)="guardarResultado()">
+        <div class="col-md-3">
+          <label class="form-label">Estado</label>
+          <select class="form-select" name="estado" [(ngModel)]="resultado.estado">
+            <option value="programado">Programado</option>
+            <option value="jugado">Jugado</option>
+            <option value="default">Default (un equipo no se presentó)</option>
+            <option value="suspendido">Suspendido</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Goles {{ p.local }}</label>
+          <input type="number" min="0" class="form-control" name="gl" [(ngModel)]="resultado.goles_local">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Goles {{ p.visitante }}</label>
+          <input type="number" min="0" class="form-control" name="gv" [(ngModel)]="resultado.goles_visitante">
+        </div>
+        @if (resultado.estado === 'default') {
+          <div class="col-md-3">
+            <label class="form-label">Equipo que no se presentó</label>
+            <select class="form-select" name="ausente" [(ngModel)]="resultado.equipo_ausente_id">
+              <option [value]="p.equipo_local_id">{{ p.local }}</option>
+              <option [value]="p.equipo_visitante_id">{{ p.visitante }}</option>
+            </select>
+          </div>
+        }
+        <div class="col-12">
+          <label class="form-label">Observaciones</label>
+          <textarea class="form-control" rows="2" name="obs" [(ngModel)]="resultado.observaciones"></textarea>
+        </div>
+        <div class="col-12 text-end"><button class="btn btn-liga">Guardar resultado</button></div>
+      </form>
+    </div>
+
+    <div class="row g-4">
+      <!-- Goles -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-liga text-white fw-bold">⚽ Goles</div>
+          <div class="card-body">
+            @if (p.goles_local !== null && (golesDe(p.equipo_local_id) != p.goles_local || golesDe(p.equipo_visitante_id) != p.goles_visitante)) {
+              <div class="alert alert-warning py-2 small">
+                Los goles capturados ({{ golesDe(p.equipo_local_id) }}-{{ golesDe(p.equipo_visitante_id) }})
+                no coinciden con el marcador ({{ p.goles_local }}-{{ p.goles_visitante }}).
+              </div>
+            }
+            <form class="row g-2 mb-3" (ngSubmit)="enviar('agregarGol', gol)">
+              <div class="col-6">
+                <select class="form-select" name="equipo" [(ngModel)]="gol.equipo_id" required>
+                  <option [ngValue]="undefined">Gol para...</option>
+                  <option [value]="p.equipo_local_id">{{ p.local }}</option>
+                  <option [value]="p.equipo_visitante_id">{{ p.visitante }}</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <select class="form-select" name="jugadora" [(ngModel)]="gol.jugadora_id">
+                  <option value="">Jugadora (opcional)</option>
+                  @for (j of jugadoras(); track j.id) {
+                    <option [value]="j.id">{{ j.dorsal }} - {{ j.nombre }} ({{ j.equipo }})</option>
+                  }
+                </select>
+              </div>
+              <div class="col-4"><input type="number" class="form-control" name="min" [(ngModel)]="gol.minuto" placeholder="Minuto"></div>
+              <div class="col-4 d-flex align-items-center">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="autogol" name="autogol" [(ngModel)]="gol.autogol">
+                  <label class="form-check-label" for="autogol">Autogol</label>
+                </div>
+              </div>
+              <div class="col-4"><button class="btn btn-liga w-100">Agregar</button></div>
+            </form>
+            <ul class="list-group">
+              @for (g of goles(); track g.id) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>
+                    {{ g.minuto ? g.minuto + "'" : '' }} <strong>{{ g.equipo }}</strong>
+                    — {{ g.jugadora ?? 'Sin registrar' }} @if (g.autogol == 1) { <span class="badge text-bg-warning">Autogol</span> }
+                  </span>
+                  <button class="btn btn-sm btn-outline-danger" (click)="enviar('eliminarGol', { id: g.id })">✕</button>
+                </li>
+              } @empty {
+                <li class="list-group-item text-muted">Sin goles capturados.</li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjetas -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-liga text-white fw-bold">🟨 Tarjetas</div>
+          <div class="card-body">
+            <form class="row g-2 mb-3" (ngSubmit)="enviar('agregarTarjeta', tarjeta)">
+              <div class="col-8">
+                <select class="form-select" name="jugadora" [(ngModel)]="tarjeta.jugadora_id" required>
+                  <option [ngValue]="undefined">Jugadora...</option>
+                  @for (j of jugadoras(); track j.id) {
+                    <option [value]="j.id">{{ j.dorsal }} - {{ j.nombre }} ({{ j.equipo }})</option>
+                  }
+                </select>
+              </div>
+              <div class="col-4">
+                <select class="form-select" name="tipo" [(ngModel)]="tarjeta.tipo">
+                  <option value="amarilla">Amarilla</option>
+                  <option value="roja">Roja</option>
+                </select>
+              </div>
+              <div class="col-3"><input type="number" class="form-control" name="min" [(ngModel)]="tarjeta.minuto" placeholder="Min."></div>
+              <div class="col-6"><input class="form-control" name="motivo" [(ngModel)]="tarjeta.motivo" placeholder="Motivo"></div>
+              <div class="col-3"><button class="btn btn-liga w-100">Agregar</button></div>
+            </form>
+            <ul class="list-group">
+              @for (t of tarjetas(); track t.id) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>
+                    <span class="badge" [class]="t.tipo === 'roja' ? 'text-bg-danger' : 'text-bg-warning'">{{ t.tipo }}</span>
+                    {{ t.minuto ? t.minuto + "'" : '' }} {{ t.jugadora }}
+                    <small class="text-muted">{{ t.motivo }}</small>
+                  </span>
+                  <button class="btn btn-sm btn-outline-danger" (click)="enviar('eliminarTarjeta', { id: t.id })">✕</button>
+                </li>
+              } @empty {
+                <li class="list-group-item text-muted">Sin tarjetas.</li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <p class="text-muted">Cargando...</p>
+  }
+</div>

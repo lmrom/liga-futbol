@@ -1,0 +1,28 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="fw-bold text-liga text-center mb-4">Iniciar sesión</h2>
+          @if (error()) {
+            <div class="alert alert-danger">{{ error() }}</div>
+          }
+          <form (ngSubmit)="entrar()">
+            <div class="mb-3">
+              <label class="form-label">Correo</label>
+              <input type="email" class="form-control" name="correo" [(ngModel)]="correo" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contraseña</label>
+              <input type="password" class="form-control" name="password" [(ngModel)]="password" required>
+            </div>
+            <button class="btn btn-liga w-100">Entrar</button>
+          </form>
+          <p class="text-muted small text-center mt-3 mb-0">
+            Acceso solo para administración y delegadas de equipo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

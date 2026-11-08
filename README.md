@@ -1,59 +1,107 @@
-# PrimeraPagina
+# Liga de Fútbol Femenil ⚽
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.5.
+> *Es una liga para mujeres de mujeres*
 
-## Development server
+Página de la liga hecha con **Angular** (frontend), **PHP** (API) y **MySQL** (base de datos en WAMP).
 
-To start a local development server, run:
+- **Público:** Inicio, Partidos, Clasificación, Sobre Nosotros e Inscripción.
+- **Administración:** temporadas, canchas, árbitros, partidos, resultados, goles, tarjetas y alta de delegadas.
+- **Delegadas:** registro de su equipo y administración de sus jugadoras.
 
-```bash
-ng serve
-```
+---
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Requisitos
 
-## Code scaffolding
+- [WAMP](https://www.wampserver.com/) (Apache + PHP 8 + MySQL 8)
+- [Node.js](https://nodejs.org/) (versión LTS)
+- Git
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Instalación (primera vez)
 
-```bash
-ng generate component component-name
-```
+### 1. Clonar el proyecto dentro de WAMP
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+El proyecto **debe quedar en** `C:\wamp64\www\bravo\liga-futbol`, porque el proxy apunta a esa ruta (ver [proxy.conf.json](proxy.conf.json)).
 
 ```bash
-ng build
+cd C:\wamp64\www
+mkdir bravo
+cd bravo
+git clone <URL-del-repositorio> liga-futbol
+cd liga-futbol
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+> Si lo pones en otra carpeta, cambia `"/bravo/liga-futbol/api"` en `proxy.conf.json`.
 
-## Running unit tests
+### 2. Instalar dependencias de Angular
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+La carpeta `node_modules` **no se sube a GitHub** (pesa cientos de MB). Cada quien la genera con:
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
+### 3. Crear la base de datos
 
-For end-to-end (e2e) testing, run:
+Con WAMP encendido, abre **phpMyAdmin** (http://localhost/phpmyadmin) → pestaña **Importar**, y ejecuta en este orden los archivos de [src/db/](src/db/):
+
+1. `liga_futbol_femenil.sql` — crea la base `liga_femenil` con sus tablas
+2. `admin_inicial.sql` — crea el usuario administrador
+3. `datos_prueba.sql` — *(opcional)* temporada de ejemplo con 5 equipos
+
+### 4. Correr el proyecto
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Abre http://localhost:4200
 
-## Additional Resources
+## Usuarios de prueba
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Rol | Correo | Contraseña |
+|---|---|---|
+| Admin | admin@liga.com | admin123 |
+| Delegada (con datos de prueba) | laura@liga.com, sofia@liga.com, daniela@liga.com, valeria@liga.com, fernanda@liga.com | 123456 |
+
+---
+
+## Estructura
+
+```
+api/                  ← PHP (lo ejecuta Apache de WAMP)
+  conexion.php          conexión a MySQL y funciones de ayuda
+  auth.php              login / logout / sesión
+  publico.php           datos para visitantes
+  admin.php             acciones de la administradora
+  delegado.php          acciones de la delegada
+src/
+  app/
+    pages/            ← páginas públicas
+    admin/            ← páginas de administración
+    delegado/         ← páginas de la delegada
+    services/         ← api.ts (habla con PHP) y rol.guard.ts (protege rutas)
+  db/                 ← scripts SQL
+  styles.css          ← colores y fuente globales (el resto es Bootstrap)
+proxy.conf.json       ← manda /api/... de Angular (4200) a Apache (80)
+```
+
+## ¿Cómo funciona?
+
+Angular llama a PHP con `fetch('/api/archivo.php')` enviando `{ accion, ...datos }`.
+Durante el desarrollo, el **proxy** de `npm start` reenvía esas peticiones a Apache, así el
+navegador lo ve como un solo sitio y la sesión de PHP funciona.
+
+## Problemas comunes
+
+| Problema | Solución |
+|---|---|
+| `Unexpected token '<' ... is not valid JSON` | Reinicia `npm start` (el proxy solo se lee al arrancar) y revisa la ruta del proyecto |
+| "No se pudo conectar con la base de datos" | Enciende WAMP e importa los scripts SQL |
+| `ng` no se reconoce | Corre `npm install` y usa `npm start` en lugar de `ng serve` |
+
+## Reglas para trabajar en equipo
+
+1. Antes de empezar: `git pull`
+2. Trabaja en una rama: `git checkout -b mi-cambio`
+3. Sube tu rama y abre un Pull Request en GitHub
+4. Si cambias la base de datos, agrega un nuevo archivo `.sql` en `src/db/` para que los demás lo importen
