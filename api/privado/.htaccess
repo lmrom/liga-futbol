@@ -1,0 +1,3 @@
+# Nadie puede abrir estos archivos desde el navegador.
+# Las fotos se muestran solo con api/foto.php (revisa la sesión).
+Require all denied

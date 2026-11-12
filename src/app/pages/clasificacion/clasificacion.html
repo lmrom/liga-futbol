@@ -14,7 +14,7 @@
         <table class="table table-striped align-middle text-center">
           <thead class="table-dark">
             <tr>
-              <th>#</th><th class="text-start">Equipo</th><th>PJ</th><th>PG</th><th>PE</th>
+              <th>#</th><th class="text-start">Equipo</th><th>PJ</th><th>PG</th><th>PGP</th><th>PPP</th>
               <th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
             </tr>
           </thead>
@@ -23,18 +23,18 @@
               <tr>
                 <td>{{ i + 1 }}</td>
                 <td class="text-start fw-bold">{{ e.equipo }}</td>
-                <td>{{ e.PJ }}</td><td>{{ e.PG }}</td><td>{{ e.PE }}</td><td>{{ e.PP }}</td>
+                <td>{{ e.PJ }}</td><td>{{ e.PG }}</td><td>{{ e.PGP }}</td><td>{{ e.PPP }}</td><td>{{ e.PP }}</td>
                 <td>{{ e.GF }}</td><td>{{ e.GC }}</td><td>{{ e.DG }}</td>
                 <td class="fw-bold text-liga">{{ e.PTS }}</td>
               </tr>
             } @empty {
-              <tr><td colspan="10" class="text-muted">Aún no hay equipos inscritos.</td></tr>
+              <tr><td colspan="11" class="text-muted">Aún no hay equipos inscritos.</td></tr>
             }
           </tbody>
         </table>
       </div>
       <small class="text-muted">
-        PJ: jugados · PG: ganados · PE: empatados · PP: perdidos · GF/GC: goles a favor/en contra · DG: diferencia
+        PJ: jugados · PG: ganados · PGP: ganados en penales · PPP: perdidos en penales · PP: perdidos · GF/GC: goles a favor/en contra · DG: diferencia
       </small>
     </div>
 
@@ -44,7 +44,10 @@
         <ul class="list-group list-group-flush">
           @for (g of goleo(); track $index) {
             <li class="list-group-item d-flex justify-content-between">
-              <span>{{ g.jugadora }} <small class="text-muted">({{ g.equipo }})</small></span>
+              <span>
+                <a [routerLink]="['/jugadora', g.jugadora_id]" class="text-liga fw-bold text-decoration-none">{{ g.jugadora }}</a>
+                <small class="text-muted">({{ g.equipo }})</small>
+              </span>
               <span class="badge bg-liga rounded-pill">{{ g.goles }}</span>
             </li>
           } @empty {

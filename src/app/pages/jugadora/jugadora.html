@@ -1,0 +1,12 @@
+<div class="container py-5">
+  @if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  } @else if (datos(); as d) {
+    <h2 class="fw-bold text-liga mb-4">
+      {{ d.jugadora.nombre }} {{ d.jugadora.apellido_paterno }} {{ d.jugadora.apellido_materno }}
+    </h2>
+    <app-estadisticas-jugadora [stats]="d.estadisticas" />
+  } @else {
+    <p class="text-muted">Cargando...</p>
+  }
+</div>

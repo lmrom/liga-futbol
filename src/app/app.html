@@ -9,6 +9,7 @@
         <li class="nav-item"><a class="nav-link" routerLink="/inicio" routerLinkActive="active">Inicio</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/partidos" routerLinkActive="active">Partidos</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/clasificacion" routerLinkActive="active">Clasificación</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/entrenamiento" routerLinkActive="active">Entrenamiento</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/sobre-nosotros" routerLinkActive="active">Sobre Nosotros</a></li>
 
         @if (!api.usuario()) {
@@ -25,6 +26,9 @@
               <li><a class="dropdown-item" routerLink="/admin/temporadas">Temporadas</a></li>
               <li><a class="dropdown-item" routerLink="/admin/catalogos">Canchas y árbitros</a></li>
               <li><a class="dropdown-item" routerLink="/admin/delegados">Delegados y equipos</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" routerLink="/admin/contenido">Anuncios y multimedia</a></li>
+              <li><a class="dropdown-item" routerLink="/admin/entrenadores">Entrenadores</a></li>
             </ul>
           </li>
         }
@@ -48,5 +52,5 @@
 <router-outlet />
 
 <footer class="text-center py-3 bg-light mt-auto">
-  <small>Liga de Fútbol Femenil — Es una liga para mujeres de mujeres</small>
+  <small>Liga de Fútbol Femenil — Comunidad de mujeres para mujeres entre mujeres</small>
 </footer>

@@ -17,15 +17,19 @@ try {
             if ($activa) { // Solo puede haber una temporada activa
                 consulta("UPDATE temporadas SET activa = 0");
             }
+            // Puntos: victoria normal, victoria en penales y derrota en penales (no hay empates)
             $valores = [campo("nombre"), campo("fecha_inicio"), campo("fecha_fin"),
-                        campo("puntos_victoria") ?? 3, campo("puntos_empate") ?? 1, $activa];
+                        campo("puntos_victoria") ?? 3, campo("puntos_victoria_penales") ?? 2,
+                        campo("puntos_derrota_penales") ?? 1, campo("duracion_partido") ?? 90, $activa];
             if (campo("id")) {
                 $valores[] = campo("id");
-                consulta("UPDATE temporadas SET nombre=?, fecha_inicio=?, fecha_fin=?,
-                          puntos_victoria=?, puntos_empate=?, activa=? WHERE id=?", $valores);
+                consulta("UPDATE temporadas SET nombre=?, fecha_inicio=?, fecha_fin=?, puntos_victoria=?,
+                          puntos_victoria_penales=?, puntos_derrota_penales=?, duracion_partido=?, activa=?
+                          WHERE id=?", $valores);
             } else {
                 consulta("INSERT INTO temporadas (nombre, fecha_inicio, fecha_fin, puntos_victoria,
-                          puntos_empate, activa) VALUES (?,?,?,?,?,?)", $valores);
+                          puntos_victoria_penales, puntos_derrota_penales, duracion_partido, activa)
+                          VALUES (?,?,?,?,?,?,?,?)", $valores);
             }
             responder(["ok" => true]);
 
@@ -136,25 +140,150 @@ try {
             );
             $jugadoras = consulta(
                 "SELECT j.id, CONCAT(j.nombre, ' ', j.apellido_paterno) AS nombre, pl.dorsal,
-                        e.nombre AS equipo
+                        pl.posicion, pl.equipo_id, e.nombre AS equipo
                  FROM plantillas pl
                  JOIN jugadoras j ON j.id = pl.jugadora_id
                  JOIN equipos e ON e.id = pl.equipo_id
-                 WHERE pl.temporada_id = ? AND pl.equipo_id IN (?, ?)
+                 WHERE pl.temporada_id = ? AND pl.equipo_id IN (?, ?) AND pl.fecha_baja IS NULL
                  ORDER BY e.nombre, pl.dorsal",
                 [$partido["temporada_id"], $partido["equipo_local_id"], $partido["equipo_visitante_id"]]
             );
-            responder(["partido" => $partido, "goles" => $goles,
-                       "tarjetas" => $tarjetas, "jugadoras" => $jugadoras]);
+            // ids de las titulares
+            $titulares = array_column(
+                consulta("SELECT jugadora_id FROM alineaciones WHERE partido_id = ?", [$id]), "jugadora_id"
+            );
+            $cambios = consulta(
+                "SELECT c.*, e.nombre AS equipo,
+                        CONCAT(s.nombre, ' ', s.apellido_paterno) AS sale,
+                        CONCAT(n.nombre, ' ', n.apellido_paterno) AS entra
+                 FROM cambios c
+                 JOIN equipos e ON e.id = c.equipo_id
+                 JOIN jugadoras s ON s.id = c.sale_jugadora_id
+                 JOIN jugadoras n ON n.id = c.entra_jugadora_id
+                 WHERE c.partido_id = ? ORDER BY c.minuto", [$id]
+            );
+            $faltas = consulta(
+                "SELECT f.*, e.nombre AS equipo, CONCAT(j.nombre, ' ', j.apellido_paterno) AS jugadora
+                 FROM faltas f JOIN equipos e ON e.id = f.equipo_id
+                 LEFT JOIN jugadoras j ON j.id = f.jugadora_id
+                 WHERE f.partido_id = ? ORDER BY f.minuto", [$id]
+            );
+            // Atajadas guardadas: { idPortera: cantidad }
+            $atajadas = array_column(
+                consulta("SELECT jugadora_id, cantidad FROM atajadas WHERE partido_id = ?", [$id]),
+                "cantidad", "jugadora_id"
+            );
+            responder(["partido" => $partido, "goles" => $goles, "tarjetas" => $tarjetas, "faltas" => $faltas,
+                       "jugadoras" => $jugadoras, "titulares" => $titulares, "cambios" => $cambios,
+                       "atajadas" => (object) $atajadas]);
 
-        // Resultado final: estado, marcador, equipo ausente (default) y observaciones
+        // Resultado final: estado, marcador, penales (si empataron), equipo ausente y observaciones
         case "guardarResultado":
             $estado = campo("estado");
+            $empate = $estado === "jugado" && campo("goles_local") !== null
+                      && campo("goles_local") == campo("goles_visitante");
+            if ($empate && (campo("penales_local") === null || campo("penales_visitante") === null
+                            || campo("penales_local") == campo("penales_visitante"))) {
+                responder(["error" => "No hay empates: captura el resultado de los penales (no puede quedar igual)"], 400);
+            }
             $ausente = $estado === "default" ? campo("equipo_ausente_id") : null;
-            consulta("UPDATE partidos SET estado=?, goles_local=?, goles_visitante=?,
-                      equipo_ausente_id=?, observaciones=? WHERE id=?",
+            consulta("UPDATE partidos SET estado=?, goles_local=?, goles_visitante=?, penales_local=?,
+                      penales_visitante=?, equipo_ausente_id=?, observaciones=? WHERE id=?",
                      [$estado, campo("goles_local"), campo("goles_visitante"),
+                      $empate ? campo("penales_local") : null, $empate ? campo("penales_visitante") : null,
                       $ausente, campo("observaciones"), campo("id")]);
+            responder(["ok" => true]);
+
+        // Atajadas: llega { idPortera: cantidad }. Solo cuenta a las porteras de los dos equipos.
+        // Vacío o 0 = se borra el registro.
+        case "guardarAtajadas":
+            $partidoId = campo("partido_id");
+            $conn->begin_transaction();
+            consulta("DELETE FROM atajadas WHERE partido_id = ?", [$partidoId]);
+            foreach ($datos["atajadas"] ?? [] as $jugadoraId => $cantidad) {
+                if ((int) $cantidad > 0) {
+                    consulta(
+                        "INSERT INTO atajadas (partido_id, jugadora_id, equipo_id, cantidad)
+                         SELECT p.id, pl.jugadora_id, pl.equipo_id, ?
+                         FROM partidos p JOIN plantillas pl ON pl.temporada_id = p.temporada_id
+                           AND pl.equipo_id IN (p.equipo_local_id, p.equipo_visitante_id)
+                           AND pl.posicion = 'Portera'
+                         WHERE p.id = ? AND pl.jugadora_id = ?",
+                        [(int) $cantidad, $partidoId, $jugadoraId]
+                    );
+                }
+            }
+            $conn->commit();
+            responder(["ok" => true]);
+
+        // Falta: con jugadora, el equipo se toma de su plantilla.
+        // Sin jugadora (no se anotó quién), se usa el equipo elegido.
+        case "agregarFalta":
+            if (campo("jugadora_id")) {
+                $nueva = consulta(
+                    "INSERT INTO faltas (partido_id, equipo_id, jugadora_id, minuto)
+                     SELECT p.id, pl.equipo_id, pl.jugadora_id, ?
+                     FROM partidos p JOIN plantillas pl ON pl.temporada_id = p.temporada_id
+                       AND pl.equipo_id IN (p.equipo_local_id, p.equipo_visitante_id)
+                     WHERE p.id = ? AND pl.jugadora_id = ?",
+                    [campo("minuto"), campo("partido_id"), campo("jugadora_id")]
+                );
+            } else {
+                $nueva = consulta(
+                    "INSERT INTO faltas (partido_id, equipo_id, minuto)
+                     SELECT p.id, ?, ? FROM partidos p
+                     WHERE p.id = ? AND ? IN (p.equipo_local_id, p.equipo_visitante_id)",
+                    [campo("equipo_id"), campo("minuto"), campo("partido_id"), campo("equipo_id")]
+                );
+            }
+            if (!$nueva) {
+                responder(["error" => "Elige una jugadora o un equipo de este partido"], 400);
+            }
+            responder(["ok" => true]);
+
+        case "eliminarFalta":
+            consulta("DELETE FROM faltas WHERE id = ?", [campo("id")]);
+            responder(["ok" => true]);
+
+        // Alineación inicial: llega la lista de ids de las titulares de ambos equipos.
+        // Se borra la anterior y se guarda la nueva (solo jugadoras de los dos equipos).
+        case "guardarAlineacion":
+            $partidoId = campo("partido_id");
+            $conn->begin_transaction();
+            consulta("DELETE FROM alineaciones WHERE partido_id = ?", [$partidoId]);
+            foreach ($datos["titulares"] ?? [] as $jugadoraId) {
+                consulta(
+                    "INSERT INTO alineaciones (partido_id, jugadora_id, equipo_id)
+                     SELECT p.id, pl.jugadora_id, pl.equipo_id
+                     FROM partidos p JOIN plantillas pl ON pl.temporada_id = p.temporada_id
+                       AND pl.equipo_id IN (p.equipo_local_id, p.equipo_visitante_id)
+                     WHERE p.id = ? AND pl.jugadora_id = ?",
+                    [$partidoId, $jugadoraId]
+                );
+            }
+            $conn->commit();
+            responder(["ok" => true]);
+
+        // Cambio: las dos jugadoras deben ser del mismo equipo y de este partido
+        case "agregarCambio":
+            $nuevo = consulta(
+                "INSERT INTO cambios (partido_id, equipo_id, sale_jugadora_id, entra_jugadora_id, minuto)
+                 SELECT p.id, s.equipo_id, s.jugadora_id, e.jugadora_id, ?
+                 FROM partidos p
+                 JOIN plantillas s ON s.temporada_id = p.temporada_id AND s.jugadora_id = ?
+                   AND s.equipo_id IN (p.equipo_local_id, p.equipo_visitante_id)
+                 JOIN plantillas e ON e.temporada_id = p.temporada_id AND e.jugadora_id = ?
+                   AND e.equipo_id = s.equipo_id
+                 WHERE p.id = ?",
+                [campo("minuto"), campo("sale_jugadora_id"), campo("entra_jugadora_id"), campo("partido_id")]
+            );
+            if (!$nuevo) {
+                responder(["error" => "La jugadora que sale y la que entra deben ser del mismo equipo"], 400);
+            }
+            responder(["ok" => true]);
+
+        case "eliminarCambio":
+            consulta("DELETE FROM cambios WHERE id = ?", [campo("id")]);
             responder(["ok" => true]);
 
         case "agregarGol":
@@ -177,6 +306,70 @@ try {
 
         case "eliminarTarjeta":
             consulta("DELETE FROM tarjetas WHERE id = ?", [campo("id")]);
+            responder(["ok" => true]);
+
+        // ------------------------- ENTRENADORES -----------------------
+        case "entrenadores":
+            responder(consulta("SELECT * FROM entrenadores ORDER BY nombre"));
+
+        case "guardarEntrenador":
+            $valores = [campo("nombre"), campo("especialidad"), campo("cualidades"), campo("descripcion"),
+                        campo("precio"), campo("zona"), campo("telefono"), campo("correo"), campo("activo") ?? 1];
+            $id = campo("id");
+            if ($id) {
+                $valores[] = $id;
+                consulta("UPDATE entrenadores SET nombre=?, especialidad=?, cualidades=?, descripcion=?,
+                          precio=?, zona=?, telefono=?, correo=?, activo=? WHERE id=?", $valores);
+            } else {
+                $id = consulta("INSERT INTO entrenadores (nombre, especialidad, cualidades, descripcion,
+                                precio, zona, telefono, correo, activo) VALUES (?,?,?,?,?,?,?,?,?)", $valores);
+            }
+            if (campo("foto")) { // foto nueva (opcional)
+                $ruta = guardarImagen(campo("foto"), "uploads/entrenadores", $id);
+                consulta("UPDATE entrenadores SET foto_url = ? WHERE id = ?", [$ruta, $id]);
+            }
+            responder(["ok" => true]);
+
+        case "eliminarEntrenador":
+            $foto = consulta("SELECT foto_url FROM entrenadores WHERE id = ?", [campo("id")])[0]["foto_url"] ?? null;
+            consulta("DELETE FROM entrenadores WHERE id = ?", [campo("id")]);
+            borrarImagen($foto);
+            responder(["ok" => true]);
+
+        // --------------------------- ANUNCIOS -------------------------
+        case "anuncios":
+            responder(consulta("SELECT * FROM anuncios ORDER BY fecha DESC"));
+
+        case "guardarAnuncio":
+            consulta("INSERT INTO anuncios (titulo, contenido, fecha) VALUES (?,?,?)",
+                     [campo("titulo"), campo("contenido"), campo("fecha")]);
+            responder(["ok" => true]);
+
+        case "eliminarAnuncio":
+            consulta("DELETE FROM anuncios WHERE id = ?", [campo("id")]);
+            responder(["ok" => true]);
+
+        // -------------------------- MULTIMEDIA ------------------------
+        // Imagen: llega el archivo en base64. Video: llega el enlace de YouTube.
+        case "agregarMultimedia":
+            if (campo("tipo") === "imagen") {
+                $url = guardarImagen(campo("archivo"), "uploads/multimedia", uniqid());
+            } else {
+                $url = campo("url");
+                if (!preg_match('#^https://(www\.)?(youtube\.com|youtu\.be)/#', $url ?? "")) {
+                    responder(["error" => "Escribe un enlace de YouTube válido"], 400);
+                }
+            }
+            consulta("INSERT INTO multimedia (tipo, titulo, url) VALUES (?,?,?)",
+                     [campo("tipo"), campo("titulo"), $url]);
+            responder(["ok" => true]);
+
+        case "eliminarMultimedia":
+            $fila = consulta("SELECT * FROM multimedia WHERE id = ?", [campo("id")])[0] ?? null;
+            consulta("DELETE FROM multimedia WHERE id = ?", [campo("id")]);
+            if ($fila && $fila["tipo"] === "imagen") {
+                borrarImagen($fila["url"]);
+            }
             responder(["ok" => true]);
 
         // -------------------------- DELEGADOS -------------------------

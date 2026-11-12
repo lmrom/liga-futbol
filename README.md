@@ -1,12 +1,14 @@
 # Liga de Fútbol Femenil ⚽
 
-> *Es una liga para mujeres de mujeres*
+> *Comunidad de mujeres para mujeres entre mujeres*
+>
+> No es una liga más: más que fútbol, es una comunidad.
 
 Página de la liga hecha con **Angular** (frontend), **PHP** (API) y **MySQL** (base de datos en WAMP).
 
-- **Público:** Inicio, Partidos, Clasificación, Sobre Nosotros e Inscripción.
-- **Administración:** temporadas, canchas, árbitros, partidos, resultados, goles, tarjetas y alta de delegadas.
-- **Delegadas:** registro de su equipo y administración de sus jugadoras.
+- **Público:** Inicio (anuncios por mes, fotos y videos), Partidos, Clasificación, Entrenamiento, Sobre Nosotros, Inscripción y perfil público de cada jugadora (estadísticas).
+- **Administración:** temporadas, canchas, árbitros, partidos, resultados, faltas, alineaciones, cambios, goles, tarjetas, delegadas, anuncios, multimedia y entrenadores.
+- **Delegadas:** registro de su equipo y de sus jugadoras con perfil privado (foto y contactos de emergencia).
 
 ---
 
@@ -46,7 +48,9 @@ Con WAMP encendido, abre **phpMyAdmin** (http://localhost/phpmyadmin) → pesta�
 
 1. `liga_futbol_femenil.sql` — crea la base `liga_femenil` con sus tablas
 2. `admin_inicial.sql` — crea el usuario administrador
-3. `datos_prueba.sql` — *(opcional)* temporada de ejemplo con 5 equipos
+3. `cambios_v2.sql` — faltas, alineaciones, cambios, perfiles, entrenadores, anuncios y multimedia
+4. `datos_prueba.sql` — *(opcional)* temporada de ejemplo con 5 equipos
+5. `datos_prueba_v2.sql` — *(opcional)* alineaciones, cambios, entrenadores y anuncios de ejemplo
 
 ### 4. Correr el proyecto
 

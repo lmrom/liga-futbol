@@ -38,12 +38,169 @@
             </select>
           </div>
         }
+        <!-- No hay empates: si quedan iguales se capturan los penales -->
+        @if (hayEmpate()) {
+          <div class="col-12">
+            <div class="alert alert-warning py-2 mb-0 row g-2 align-items-center">
+              <div class="col-md-4 fw-bold">Empate: ¿cómo quedaron los penales?</div>
+              <div class="col-md-3">
+                <input type="number" min="0" class="form-control form-control-sm" name="pl" [(ngModel)]="resultado.penales_local" [placeholder]="'Penales ' + p.local">
+              </div>
+              <div class="col-md-3">
+                <input type="number" min="0" class="form-control form-control-sm" name="pv" [(ngModel)]="resultado.penales_visitante" [placeholder]="'Penales ' + p.visitante">
+              </div>
+            </div>
+          </div>
+        }
         <div class="col-12">
           <label class="form-label">Observaciones</label>
           <textarea class="form-control" rows="2" name="obs" [(ngModel)]="resultado.observaciones"></textarea>
         </div>
         <div class="col-12 text-end"><button class="btn btn-liga">Guardar resultado</button></div>
       </form>
+    </div>
+
+    <!-- Alineación inicial: se marcan las titulares; las demás son reservas -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-liga text-white fw-bold">📋 Alineación inicial</div>
+      <div class="card-body">
+        <p class="small text-muted">Marca a las titulares. Las que no estén marcadas quedan como <strong>reservas</strong>.</p>
+        <div class="row g-4">
+          @for (eq of [{ id: p.equipo_local_id, nombre: p.local }, { id: p.equipo_visitante_id, nombre: p.visitante }]; track eq.id) {
+            <div class="col-md-6">
+              <h6 class="fw-bold d-flex justify-content-between">
+                {{ eq.nombre }} <span class="badge text-bg-light border">{{ cuantasTitulares(eq.id) }} titulares</span>
+              </h6>
+              <ul class="list-group">
+                @for (j of jugadorasDe(eq.id); track j.id) {
+                  <li class="list-group-item d-flex justify-content-between align-items-center py-1">
+                    <div class="form-check m-0">
+                      <input type="checkbox" class="form-check-input" [id]="'tit' + j.id" [(ngModel)]="titular[j.id]" [name]="'tit' + j.id">
+                      <label class="form-check-label" [for]="'tit' + j.id">{{ j.dorsal }} - {{ j.nombre }}</label>
+                    </div>
+                    <span class="d-flex gap-2 align-items-center">
+                      <span class="badge text-bg-light border" title="Posición habitual">{{ j.posicion }}</span>
+                      @if (titular[j.id]) { <span class="badge text-bg-success">Titular</span> }
+                      @else { <span class="badge text-bg-secondary">Reserva</span> }
+                      <a [routerLink]="['/jugadora', j.id, 'privado']" class="small" title="Perfil privado">👤</a>
+                    </span>
+                  </li>
+                } @empty {
+                  <li class="list-group-item text-muted">Sin jugadoras registradas.</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+        <div class="text-end mt-3"><button class="btn btn-liga" (click)="guardarAlineacion()">Guardar alineación</button></div>
+      </div>
+    </div>
+
+    <!-- Atajadas: solo aparecen las jugadoras cuya posición habitual es Portera -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-liga text-white fw-bold">🧤 Atajadas de las porteras</div>
+      <div class="card-body">
+        <div class="row g-4">
+          @for (eq of [{ id: p.equipo_local_id, nombre: p.local }, { id: p.equipo_visitante_id, nombre: p.visitante }]; track eq.id) {
+            <div class="col-md-6">
+              <h6 class="fw-bold">{{ eq.nombre }}</h6>
+              @for (j of porterasDe(eq.id); track j.id) {
+                <div class="input-group mb-2">
+                  <span class="input-group-text flex-grow-1">{{ j.dorsal }} - {{ j.nombre }}</span>
+                  <input type="number" min="0" class="form-control" [(ngModel)]="atajadas[j.id]" placeholder="0">
+                  <span class="input-group-text">atajadas</span>
+                </div>
+              } @empty {
+                <p class="text-muted small">Este equipo no tiene jugadoras registradas como portera.</p>
+              }
+            </div>
+          }
+        </div>
+        <div class="text-end"><button class="btn btn-liga" (click)="guardarAtajadas()">Guardar atajadas</button></div>
+      </div>
+    </div>
+
+    <!-- Cambios -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-liga text-white fw-bold">🔄 Cambios</div>
+      <div class="card-body">
+        <form class="row g-2 mb-3" (ngSubmit)="enviar('agregarCambio', cambio)">
+          <div class="col-md-5">
+            <select class="form-select" name="sale" [(ngModel)]="cambio.sale_jugadora_id" required>
+              <option [ngValue]="undefined">Sale...</option>
+              @for (j of jugadoras(); track j.id) {
+                <option [value]="j.id">{{ j.dorsal }} - {{ j.nombre }} ({{ j.equipo }})</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select class="form-select" name="entra" [(ngModel)]="cambio.entra_jugadora_id" required>
+              <option [ngValue]="undefined">Entra...</option>
+              @for (j of companeras(); track j.id) {
+                <option [value]="j.id">{{ j.dorsal }} - {{ j.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-1">
+            <input type="number" min="0" class="form-control" name="minuto" [(ngModel)]="cambio.minuto" placeholder="Min." required>
+          </div>
+          <div class="col-md-2"><button class="btn btn-liga w-100">Agregar</button></div>
+        </form>
+        <ul class="list-group">
+          @for (c of cambios(); track c.id) {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span>
+                <strong>{{ c.minuto }}'</strong> {{ c.equipo }}:
+                <span class="text-danger">⬇ {{ c.sale }}</span> · <span class="text-success">⬆ {{ c.entra }}</span>
+              </span>
+              <button class="btn btn-sm btn-outline-danger" (click)="enviar('eliminarCambio', { id: c.id })">✕</button>
+            </li>
+          } @empty {
+            <li class="list-group-item text-muted">Sin cambios.</li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Faltas: una por registro; el total por equipo se cuenta solo -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-liga text-white fw-bold d-flex justify-content-between">
+        <span>🚫 Faltas</span>
+        <span>{{ p.local }} {{ faltasDe(p.equipo_local_id) }} · {{ faltasDe(p.equipo_visitante_id) }} {{ p.visitante }}</span>
+      </div>
+      <div class="card-body">
+        <form class="row g-2 mb-3" (ngSubmit)="agregarFalta()">
+          <div class="col-md-3">
+            <select class="form-select" name="equipo" [(ngModel)]="falta.equipo_id" (change)="falta.jugadora_id = ''" required>
+              <option [ngValue]="undefined">Equipo...</option>
+              <option [value]="p.equipo_local_id">{{ p.local }}</option>
+              <option [value]="p.equipo_visitante_id">{{ p.visitante }}</option>
+            </select>
+          </div>
+          <div class="col-md-5">
+            <select class="form-select" name="jugadora" [(ngModel)]="falta.jugadora_id">
+              <option value="">Jugadora (opcional)</option>
+              @for (j of jugadorasDe(falta.equipo_id); track j.id) {
+                <option [value]="j.id">{{ j.dorsal }} - {{ j.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-2">
+            <input type="number" min="0" class="form-control" name="minuto" [(ngModel)]="falta.minuto" placeholder="Min.">
+          </div>
+          <div class="col-md-2"><button class="btn btn-liga w-100">Agregar</button></div>
+        </form>
+        <ul class="list-group">
+          @for (f of faltas(); track f.id) {
+            <li class="list-group-item d-flex justify-content-between align-items-center py-1">
+              <span>{{ f.minuto ? f.minuto + "'" : '' }} <strong>{{ f.equipo }}</strong> — {{ f.jugadora ?? 'Sin registrar' }}</span>
+              <button class="btn btn-sm btn-outline-danger" (click)="enviar('eliminarFalta', { id: f.id })">✕</button>
+            </li>
+          } @empty {
+            <li class="list-group-item text-muted">Sin faltas registradas.</li>
+          }
+        </ul>
+      </div>
     </div>
 
     <div class="row g-4">

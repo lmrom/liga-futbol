@@ -1,0 +1,62 @@
+<div class="container py-5">
+  @if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  } @else if (datos(); as d) {
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+      <h2 class="fw-bold text-liga m-0">Perfil privado</h2>
+      <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/jugadora', id]">Ver perfil público</a>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <!-- Foto y datos -->
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0 text-center h-100">
+          @if (d.jugadora.foto_url) {
+            <img [src]="'/api/foto.php?id=' + id + '&' + d.jugadora.foto_url.split('?')[1]"
+                 class="card-img-top object-fit-cover" height="280" alt="Foto de la jugadora">
+          } @else {
+            <div class="bg-liga text-white py-5 display-1">👤</div>
+          }
+          <div class="card-body">
+            <h4 class="fw-bold mb-1">{{ d.jugadora.nombre }}</h4>
+            <p class="mb-2">{{ d.jugadora.apellido_paterno }} {{ d.jugadora.apellido_materno }}</p>
+            @if (d.estadisticas.equipos[0]; as actual) {
+              <span class="badge bg-liga fs-6">#{{ actual.dorsal ?? '—' }} · {{ actual.equipo }}</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacto -->
+      <div class="col-md-8">
+        <ul class="list-group shadow-sm mb-3">
+          <li class="list-group-item"><strong>Teléfono:</strong> {{ d.jugadora.telefono ?? '—' }}</li>
+          <li class="list-group-item"><strong>Fecha de nacimiento:</strong> {{ d.jugadora.fecha_nacimiento }}</li>
+          <li class="list-group-item"><strong>CURP:</strong> {{ d.jugadora.curp ?? '—' }}</li>
+        </ul>
+        <div class="card shadow-sm border-danger">
+          <div class="card-header bg-danger text-white fw-bold">🚑 Contactos de emergencia</div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              1. {{ d.jugadora.emergencia1_nombre ?? 'Sin registrar' }}
+              @if (d.jugadora.emergencia1_telefono) {
+                — <a [href]="'tel:' + d.jugadora.emergencia1_telefono">{{ d.jugadora.emergencia1_telefono }}</a>
+              }
+            </li>
+            <li class="list-group-item">
+              2. {{ d.jugadora.emergencia2_nombre ?? 'Sin registrar' }}
+              @if (d.jugadora.emergencia2_telefono) {
+                — <a [href]="'tel:' + d.jugadora.emergencia2_telefono">{{ d.jugadora.emergencia2_telefono }}</a>
+              }
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h4 class="fw-bold text-liga mb-3">Estadísticas</h4>
+    <app-estadisticas-jugadora [stats]="d.estadisticas" />
+  } @else {
+    <p class="text-muted">Cargando...</p>
+  }
+</div>

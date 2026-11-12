@@ -1,0 +1,59 @@
+<div class="row g-3 text-center mb-4">
+  <div class="col-6 col-md">
+    <div class="card shadow-sm border-0 h-100"><div class="card-body">
+      <div class="fs-2 fw-bold text-liga">{{ stats().partidos }}</div><small class="text-muted">Partidos</small>
+    </div></div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card shadow-sm border-0 h-100"><div class="card-body">
+      <div class="fs-2 fw-bold text-liga">{{ stats().titular }}</div><small class="text-muted">De titular</small>
+    </div></div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card shadow-sm border-0 h-100"><div class="card-body">
+      <div class="fs-2 fw-bold text-liga">{{ stats().minutos }}'</div><small class="text-muted">Minutos jugados</small>
+    </div></div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card shadow-sm border-0 h-100"><div class="card-body">
+      <div class="fs-2 fw-bold text-liga">⚽ {{ stats().goles }}</div><small class="text-muted">Goles</small>
+    </div></div>
+  </div>
+  @if (stats().portera) {
+    <div class="col-6 col-md">
+      <div class="card shadow-sm border-0 h-100"><div class="card-body">
+        <div class="fs-2 fw-bold text-liga">🧤 {{ stats().atajadas }}</div><small class="text-muted">Atajadas</small>
+      </div></div>
+    </div>
+  }
+  <div class="col-6 col-md">
+    <div class="card shadow-sm border-0 h-100"><div class="card-body">
+      <div class="fs-2 fw-bold text-secondary">{{ stats().faltas }}</div><small class="text-muted">Faltas</small>
+    </div></div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card shadow-sm border-0 h-100"><div class="card-body">
+      <div class="fs-2 fw-bold text-warning">{{ stats().amarillas }}</div><small class="text-muted">Amarillas</small>
+    </div></div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card shadow-sm border-0 h-100"><div class="card-body">
+      <div class="fs-2 fw-bold text-danger">{{ stats().rojas }}</div><small class="text-muted">Rojas</small>
+    </div></div>
+  </div>
+</div>
+
+<h5 class="fw-bold">Equipos</h5>
+<table class="table table-sm align-middle">
+  <thead class="table-dark"><tr><th>Temporada</th><th>Equipo</th><th>Dorsal</th><th>Posición</th></tr></thead>
+  <tbody>
+    @for (e of stats().equipos; track $index) {
+      <tr>
+        <td>{{ e.temporada }}</td>
+        <td class="fw-bold">{{ e.equipo }} @if (e.fecha_baja) { <span class="badge text-bg-secondary">Baja</span> }</td>
+        <td>{{ e.dorsal ?? '—' }}</td>
+        <td>{{ e.posicion ?? '—' }}</td>
+      </tr>
+    }
+  </tbody>
+</table>

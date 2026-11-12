@@ -15,7 +15,7 @@ export class AdminTemporadas {
   mensaje = signal('');
   error = signal('');
 
-  form: any = { puntos_victoria: 3, puntos_empate: 1, activa: true };
+  form: any = { puntos_victoria: 3, puntos_victoria_penales: 2, puntos_derrota_penales: 1, duracion_partido: 90, activa: true };
   temporadaId = '';               // temporada elegida para ver sus equipos
   nuevo: any = { equipo_id: '', grupo: '' };
 
@@ -35,7 +35,7 @@ export class AdminTemporadas {
   async guardar() {
     await this.ejecutar(async () => {
       await this.api.post('admin', 'guardarTemporada', this.form);
-      this.form = { puntos_victoria: 3, puntos_empate: 1, activa: true };
+      this.form = { puntos_victoria: 3, puntos_victoria_penales: 2, puntos_derrota_penales: 1, duracion_partido: 90, activa: true };
       await this.cargar();
       this.mensaje.set('Temporada guardada');
     });

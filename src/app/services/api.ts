@@ -29,6 +29,18 @@ export class Api {
     }
   }
 
+  // Convierte la imagen elegida en un <input type="file"> a texto base64 para mandarla en el JSON
+  leerImagen(evento: Event): Promise<string> {
+    const archivo = (evento.target as HTMLInputElement).files?.[0];
+    return new Promise((resolve, reject) => {
+      if (!archivo) return resolve('');
+      if (archivo.size > 2 * 1024 * 1024) return reject(new Error('La imagen pesa más de 2 MB'));
+      const lector = new FileReader();
+      lector.onload = () => resolve(lector.result as string);
+      lector.readAsDataURL(archivo);
+    });
+  }
+
   async logout() {
     await this.post('auth', 'logout');
     this.usuario.set(null);

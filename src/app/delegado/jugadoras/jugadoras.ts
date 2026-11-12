@@ -30,6 +30,14 @@ export class DelegadoJugadoras {
     this.form = { ...j, capitana: j.capitana == 1 };
   }
 
+  async elegirFoto(evento: Event) {
+    try {
+      this.form.foto = await this.api.leerImagen(evento);
+    } catch (e: any) {
+      this.error.set(e.message);
+    }
+  }
+
   limpiar() {
     this.form = { capitana: false };
   }

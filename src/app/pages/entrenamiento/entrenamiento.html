@@ -1,0 +1,50 @@
+<section class="bg-liga-gradiente text-white text-center py-5">
+  <div class="container">
+    <h2 class="display-6 fw-bold">Acondicionamiento físico personalizado</h2>
+    <p class="lead mb-0">Entrenadores especialistas que van a tu domicilio. Elige el tuyo y contáctalo directamente.</p>
+  </div>
+</section>
+
+<div class="container py-5">
+  <div class="row g-4">
+    @for (e of entrenadores(); track e.id) {
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+          @if (e.foto_url) {
+            <div class="ratio ratio-16x9">
+              <img [src]="'/api/' + e.foto_url" class="card-img-top object-fit-cover" [alt]="e.nombre">
+            </div>
+          } @else {
+            <div class="ratio ratio-16x9 bg-liga rounded-top">
+              <div class="d-flex align-items-center justify-content-center text-white display-3 fw-bold">
+                {{ iniciales(e.nombre) }}
+              </div>
+            </div>
+          }
+          <div class="card-body d-flex flex-column">
+            <span class="badge bg-liga align-self-start mb-2">{{ e.especialidad }}</span>
+            <h5 class="card-title fw-bold mb-1">{{ e.nombre }}</h5>
+            @if (e.zona) { <small class="text-muted mb-2">🏠 A domicilio · {{ e.zona }}</small> }
+            <p class="card-text">{{ e.descripcion }}</p>
+            <div class="mb-3">
+              @for (c of e.listaCualidades; track c) {
+                <span class="badge rounded-pill text-bg-light border me-1 mb-1">✓ {{ c }}</span>
+              }
+            </div>
+            @if (e.precio) { <p class="fs-5 fw-bold text-liga mt-auto">{{ e.precio }}</p> }
+            <div class="d-grid gap-2" [class.mt-auto]="!e.precio">
+              @if (e.telefono) {
+                <a class="btn btn-success" [href]="whatsapp(e)" target="_blank" rel="noopener">Contactar por WhatsApp</a>
+              }
+              @if (e.correo) {
+                <a class="btn btn-outline-secondary" [href]="'mailto:' + e.correo">Enviar correo</a>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <p class="text-muted">Pronto tendremos entrenadores disponibles.</p>
+    }
+  </div>
+</div>

@@ -66,12 +66,71 @@ function campo($nombre) {
     return $datos[$nombre];
 }
 
-// Revisa que haya sesión iniciada con el rol indicado
-function requiereRol($rol) {
-    if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== $rol) {
+// Revisa que haya sesión iniciada con el rol indicado.
+// Acepta uno ("admin") o varios (["admin", "delegado"])
+function requiereRol($roles) {
+    $roles = (array) $roles;
+    if (!isset($_SESSION["usuario"]) || !in_array($_SESSION["usuario"]["rol"], $roles)) {
         responder(["error" => "No tienes permiso para esta acción"], 401);
     }
     return $_SESSION["usuario"];
+}
+
+// Guarda una imagen que llega desde Angular como texto base64 ("data:image/png;base64,....")
+// $carpeta es relativa a /api (ej. "uploads/entrenadores"). Regresa la ruta guardada.
+function guardarImagen($dataUrl, $carpeta, $nombre) {
+    if (!preg_match('#^data:image/(jpeg|png|webp);base64,#', $dataUrl, $tipo)) {
+        responder(["error" => "La imagen debe ser JPG, PNG o WEBP"], 400);
+    }
+    $bytes = base64_decode(substr($dataUrl, strpos($dataUrl, ",") + 1), true);
+    // getimagesizefromstring revisa que de verdad sea una imagen
+    // (la @ evita que PHP imprima un aviso en HTML que rompería el JSON)
+    if ($bytes === false || strlen($bytes) > 2 * 1024 * 1024 || !@getimagesizefromstring($bytes)) {
+        responder(["error" => "La imagen no es válida o pesa más de 2 MB"], 400);
+    }
+    $extension = $tipo[1] === "jpeg" ? "jpg" : $tipo[1];
+    $directorio = __DIR__ . "/$carpeta";
+    if (!is_dir($directorio)) {
+        mkdir($directorio, 0777, true);
+    }
+    foreach (glob("$directorio/$nombre.*") as $anterior) { // borra la foto anterior
+        unlink($anterior);
+    }
+    file_put_contents("$directorio/$nombre.$extension", $bytes);
+    return "$carpeta/$nombre.$extension?v=" . time(); // ?v= evita que el navegador muestre la vieja
+}
+
+// Borra un archivo que se guardó con guardarImagen
+function borrarImagen($ruta) {
+    $archivo = __DIR__ . "/" . strtok($ruta ?? "", "?");
+    if (str_starts_with($ruta ?? "", "uploads/") && !str_contains($ruta, "..") && is_file($archivo)) {
+        unlink($archivo);
+    }
+}
+
+// Partidos jugados y minutos en cancha de una jugadora.
+// Titular: juega desde el minuto 0. Reserva: desde que entra de cambio.
+// Sale cuando la cambian; si no, juega hasta el final (duracion_partido).
+function minutosJugados($jugadoraId) {
+    $partidos = consulta(
+        "SELECT t.duracion_partido AS duracion,
+                (SELECT 1 FROM alineaciones a WHERE a.partido_id = p.id AND a.jugadora_id = ?) AS titular,
+                (SELECT MIN(minuto) FROM cambios c WHERE c.partido_id = p.id AND c.entra_jugadora_id = ?) AS entra,
+                (SELECT MIN(minuto) FROM cambios c WHERE c.partido_id = p.id AND c.sale_jugadora_id = ?) AS sale
+         FROM partidos p JOIN temporadas t ON t.id = p.temporada_id
+         WHERE p.estado = 'jugado'
+         HAVING titular IS NOT NULL OR entra IS NOT NULL",
+        [$jugadoraId, $jugadoraId, $jugadoraId]
+    );
+    $minutos = 0;
+    $titularidades = 0;
+    foreach ($partidos as $p) {
+        $inicio = $p["titular"] ? 0 : $p["entra"];
+        $fin = ($p["sale"] !== null && $p["sale"] >= $inicio) ? $p["sale"] : $p["duracion"];
+        $minutos += max(0, min($fin, $p["duracion"]) - $inicio);
+        $titularidades += $p["titular"] ? 1 : 0;
+    }
+    return ["partidos" => count($partidos), "titular" => $titularidades, "minutos" => $minutos];
 }
 
 // Temporada marcada como activa (la más reciente)

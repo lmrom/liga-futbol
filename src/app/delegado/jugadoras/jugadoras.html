@@ -49,9 +49,9 @@
             <input type="number" min="0" class="form-control" name="dorsal" [(ngModel)]="form.dorsal">
           </div>
           <div class="col-md-2">
-            <label class="form-label">Posición</label>
-            <select class="form-select" name="posicion" [(ngModel)]="form.posicion">
-              <option value="">—</option>
+            <label class="form-label" title="La que juega normalmente; no limita la alineación">Posición habitual</label>
+            <select class="form-select" name="posicion" [(ngModel)]="form.posicion" required>
+              <option [ngValue]="undefined" disabled>Elige...</option>
               <option>Portera</option>
               <option>Defensa</option>
               <option>Medio</option>
@@ -62,6 +62,27 @@
             <div class="form-check">
               <input type="checkbox" class="form-check-input" id="cap" name="capitana" [(ngModel)]="form.capitana">
               <label class="form-check-label" for="cap">Capitana</label>
+            </div>
+          </div>
+
+          <!-- Perfil privado -->
+          <div class="col-12"><hr class="my-2"><h6 class="fw-bold text-liga">Perfil privado (solo lo ven tú y la administración)</h6></div>
+          <div class="col-md-4">
+            <label class="form-label">Foto (JPG, PNG o WEBP, máx. 2 MB)</label>
+            <input type="file" class="form-control" accept="image/jpeg,image/png,image/webp" (change)="elegirFoto($event)">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Contacto de emergencia 1</label>
+            <div class="input-group">
+              <input class="form-control" name="e1n" [(ngModel)]="form.emergencia1_nombre" placeholder="Nombre">
+              <input class="form-control" name="e1t" [(ngModel)]="form.emergencia1_telefono" placeholder="Teléfono">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Contacto de emergencia 2</label>
+            <div class="input-group">
+              <input class="form-control" name="e2n" [(ngModel)]="form.emergencia2_nombre" placeholder="Nombre">
+              <input class="form-control" name="e2t" [(ngModel)]="form.emergencia2_telefono" placeholder="Teléfono">
             </div>
           </div>
           <div class="col-12 text-end"><button class="btn btn-liga">Guardar jugadora</button></div>
@@ -79,7 +100,13 @@
               <tr>
                 <td class="fw-bold">{{ j.dorsal ?? '—' }}</td>
                 <td>
-                  {{ j.nombre }} {{ j.apellido_paterno }} {{ j.apellido_materno }}
+                  @if (j.foto_url) {
+                    <img [src]="'/api/foto.php?id=' + j.jugadora_id + '&' + j.foto_url.split('?')[1]"
+                         class="rounded-circle object-fit-cover me-2" width="36" height="36" alt="">
+                  }
+                  <a [routerLink]="['/jugadora', j.jugadora_id, 'privado']" class="text-liga fw-bold text-decoration-none">
+                    {{ j.nombre }} {{ j.apellido_paterno }} {{ j.apellido_materno }}
+                  </a>
                   @if (j.capitana == 1) { <span class="badge bg-liga">C</span> }
                 </td>
                 <td>{{ j.posicion ?? '—' }}</td>

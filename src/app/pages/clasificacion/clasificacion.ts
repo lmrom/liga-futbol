@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-clasificacion',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './clasificacion.html',
 })
 export class Clasificacion {

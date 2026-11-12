@@ -22,16 +22,25 @@
               <input type="date" class="form-control mb-2" name="fecha_fin" [(ngModel)]="form.fecha_fin">
             </div>
           </div>
-          <div class="row">
+          <label class="form-label fw-bold">Puntos (no hay empates)</label>
+          <div class="row g-2">
             <div class="col">
-              <label class="form-label">Pts. victoria</label>
-              <input type="number" class="form-control mb-2" name="pv" [(ngModel)]="form.puntos_victoria">
+              <label class="form-label small">Victoria</label>
+              <input type="number" min="0" class="form-control" name="pv" [(ngModel)]="form.puntos_victoria">
             </div>
             <div class="col">
-              <label class="form-label">Pts. empate</label>
-              <input type="number" class="form-control mb-2" name="pe" [(ngModel)]="form.puntos_empate">
+              <label class="form-label small">Gana penales</label>
+              <input type="number" min="0" class="form-control" name="pvp" [(ngModel)]="form.puntos_victoria_penales">
+            </div>
+            <div class="col">
+              <label class="form-label small">Pierde penales</label>
+              <input type="number" min="0" class="form-control" name="pdp" [(ngModel)]="form.puntos_derrota_penales">
             </div>
           </div>
+          <small class="text-muted d-block mb-2">Si un partido termina igualado, se define por penales.</small>
+          <label class="form-label">Duración del partido (minutos)</label>
+          <input type="number" class="form-control mb-2" name="duracion" [(ngModel)]="form.duracion_partido">
+          <small class="text-muted d-block mb-2">Se usa para calcular los minutos jugados de cada jugadora.</small>
           <div class="form-check mb-3">
             <input type="checkbox" class="form-check-input" id="activa" name="activa" [(ngModel)]="form.activa">
             <label class="form-check-label" for="activa">Temporada activa</label>

@@ -24,6 +24,9 @@
             <td class="text-end fw-bold">{{ p.local }}</td>
             <td class="fs-5">
               @if (p.goles_local !== null) { {{ p.goles_local }} - {{ p.goles_visitante }} } @else { vs }
+              @if (p.penales_local !== null) {
+                <small class="d-block text-muted">Penales {{ p.penales_local }} - {{ p.penales_visitante }}</small>
+              }
             </td>
             <td class="text-start fw-bold">{{ p.visitante }}</td>
             <td>{{ p.cancha ?? '—' }}</td>

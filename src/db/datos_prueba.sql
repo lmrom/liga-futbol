@@ -1,7 +1,7 @@
 -- =====================================================================
 --  Datos de prueba: temporada 'Apertura 2026' con 5 equipos
 --  Delegadas: laura@ sofia@ daniela@ valeria@ fernanda@liga.com  (contraseña: 123456)
---  Generado automáticamente. Se puede ejecutar en una base que solo tenga el admin.
+--  Generado automáticamente. Ejecutar después de cambios_v2.sql (usa la columna de penales).
 -- =====================================================================
 USE liga_femenil;
 
@@ -24,7 +24,7 @@ SET @a2 = LAST_INSERT_ID();
 INSERT INTO equipos (nombre, nombre_corto, responsable, telefono_contacto, correo_contacto) VALUES ('Leonas FC', 'LEO', 'Laura Méndez', '5552082305', 'laura@liga.com');
 SET @e1 = LAST_INSERT_ID();
 INSERT INTO temporada_equipos (temporada_id, equipo_id) VALUES (@t, @e1);
-INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Laura Méndez', 'laura@liga.com', '$2y$10$lFcvwBzYE0fvwmu..8d/q.I.RRZDm0GMMR1y6na5BxdhdfBO/lyDC', 'delegado', @e1);
+INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Laura Méndez', 'laura@liga.com', '$2y$10$86CjrwwJSQZ8ajoMqRwyr.LDIB9dqFZMPkV/hszHLCIwVBuSc23Zi', 'delegado', @e1);
 INSERT INTO jugadoras (nombre, apellido_paterno, apellido_materno, fecha_nacimiento, telefono) VALUES ('Jimena', 'Aguilar', 'Reyes', '1993-06-10', '5576691060');
 SET @j1_1 = LAST_INSERT_ID();
 INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, capitana, fecha_alta) VALUES (@t, @e1, @j1_1, 1, 'Portera', 0, '2026-09-20');
@@ -66,7 +66,7 @@ INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, 
 INSERT INTO equipos (nombre, nombre_corto, responsable, telefono_contacto, correo_contacto) VALUES ('Águilas Doradas', 'AGU', 'Sofía Ramírez', '5541340605', 'sofia@liga.com');
 SET @e2 = LAST_INSERT_ID();
 INSERT INTO temporada_equipos (temporada_id, equipo_id) VALUES (@t, @e2);
-INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Sofía Ramírez', 'sofia@liga.com', '$2y$10$lFcvwBzYE0fvwmu..8d/q.I.RRZDm0GMMR1y6na5BxdhdfBO/lyDC', 'delegado', @e2);
+INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Sofía Ramírez', 'sofia@liga.com', '$2y$10$86CjrwwJSQZ8ajoMqRwyr.LDIB9dqFZMPkV/hszHLCIwVBuSc23Zi', 'delegado', @e2);
 INSERT INTO jugadoras (nombre, apellido_paterno, apellido_materno, fecha_nacimiento, telefono) VALUES ('Camila', 'Reyes', 'Reyes', '1993-03-24', '5511911616');
 SET @j2_1 = LAST_INSERT_ID();
 INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, capitana, fecha_alta) VALUES (@t, @e2, @j2_1, 1, 'Portera', 0, '2026-09-20');
@@ -108,7 +108,7 @@ INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, 
 INSERT INTO equipos (nombre, nombre_corto, responsable, telefono_contacto, correo_contacto) VALUES ('Panteras Rosas', 'PAN', 'Daniela Torres', '5511582811', 'daniela@liga.com');
 SET @e3 = LAST_INSERT_ID();
 INSERT INTO temporada_equipos (temporada_id, equipo_id) VALUES (@t, @e3);
-INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Daniela Torres', 'daniela@liga.com', '$2y$10$lFcvwBzYE0fvwmu..8d/q.I.RRZDm0GMMR1y6na5BxdhdfBO/lyDC', 'delegado', @e3);
+INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Daniela Torres', 'daniela@liga.com', '$2y$10$86CjrwwJSQZ8ajoMqRwyr.LDIB9dqFZMPkV/hszHLCIwVBuSc23Zi', 'delegado', @e3);
 INSERT INTO jugadoras (nombre, apellido_paterno, apellido_materno, fecha_nacimiento, telefono) VALUES ('Itzel', 'Pérez', 'Romero', '1998-12-09', '5551542192');
 SET @j3_1 = LAST_INSERT_ID();
 INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, capitana, fecha_alta) VALUES (@t, @e3, @j3_1, 1, 'Portera', 0, '2026-09-20');
@@ -150,7 +150,7 @@ INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, 
 INSERT INTO equipos (nombre, nombre_corto, responsable, telefono_contacto, correo_contacto) VALUES ('Halcones del Sur', 'HAL', 'Valeria Cruz', '5532986783', 'valeria@liga.com');
 SET @e4 = LAST_INSERT_ID();
 INSERT INTO temporada_equipos (temporada_id, equipo_id) VALUES (@t, @e4);
-INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Valeria Cruz', 'valeria@liga.com', '$2y$10$lFcvwBzYE0fvwmu..8d/q.I.RRZDm0GMMR1y6na5BxdhdfBO/lyDC', 'delegado', @e4);
+INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Valeria Cruz', 'valeria@liga.com', '$2y$10$86CjrwwJSQZ8ajoMqRwyr.LDIB9dqFZMPkV/hszHLCIwVBuSc23Zi', 'delegado', @e4);
 INSERT INTO jugadoras (nombre, apellido_paterno, apellido_materno, fecha_nacimiento, telefono) VALUES ('Itzel', 'González', 'Pérez', '2003-03-09', '5554867166');
 SET @j4_1 = LAST_INSERT_ID();
 INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, capitana, fecha_alta) VALUES (@t, @e4, @j4_1, 1, 'Portera', 0, '2026-09-20');
@@ -192,7 +192,7 @@ INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, 
 INSERT INTO equipos (nombre, nombre_corto, responsable, telefono_contacto, correo_contacto) VALUES ('Estrellas Unidas', 'EST', 'Fernanda Ortiz', '5530281680', 'fernanda@liga.com');
 SET @e5 = LAST_INSERT_ID();
 INSERT INTO temporada_equipos (temporada_id, equipo_id) VALUES (@t, @e5);
-INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Fernanda Ortiz', 'fernanda@liga.com', '$2y$10$lFcvwBzYE0fvwmu..8d/q.I.RRZDm0GMMR1y6na5BxdhdfBO/lyDC', 'delegado', @e5);
+INSERT INTO usuarios (nombre, correo, password_hash, rol, equipo_id) VALUES ('Fernanda Ortiz', 'fernanda@liga.com', '$2y$10$86CjrwwJSQZ8ajoMqRwyr.LDIB9dqFZMPkV/hszHLCIwVBuSc23Zi', 'delegado', @e5);
 INSERT INTO jugadoras (nombre, apellido_paterno, apellido_materno, fecha_nacimiento, telefono) VALUES ('Karla', 'Morales', 'Sánchez', '2005-10-15', '5514297822');
 SET @j5_1 = LAST_INSERT_ID();
 INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, capitana, fecha_alta) VALUES (@t, @e5, @j5_1, 1, 'Portera', 0, '2026-09-20');
@@ -231,7 +231,7 @@ SET @j5_11 = LAST_INSERT_ID();
 INSERT INTO plantillas (temporada_id, equipo_id, jugadora_id, dorsal, posicion, capitana, fecha_alta) VALUES (@t, @e5, @j5_11, 11, 'Delantera', 0, '2026-09-20');
 
 -- Jornada 1
-INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, estado) VALUES (@t, 1, '2026-10-10 10:00:00', @c1, @a1, @e1, @e2, 4, 1, 'jugado');
+INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, penales_local, penales_visitante, estado) VALUES (@t, 1, '2026-10-10 10:00:00', @c1, @a1, @e1, @e2, 4, 1, NULL, NULL, 'jugado');
 SET @p1 = LAST_INSERT_ID();
 INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p1, @e1, @j1_7, 8);
 INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p1, @e1, @j1_9, 65);
@@ -240,7 +240,7 @@ INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p1, @e1,
 INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p1, @e2, @j2_6, 37);
 INSERT INTO tarjetas (partido_id, jugadora_id, tipo, minuto, motivo) VALUES (@p1, @j1_6, 'amarilla', 36, 'Mano intencional');
 INSERT INTO tarjetas (partido_id, jugadora_id, tipo, minuto, motivo) VALUES (@p1, @j1_3, 'amarilla', 6, 'Falta táctica');
-INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, estado) VALUES (@t, 1, '2026-10-10 12:00:00', @c2, @a2, @e3, @e4, 1, 3, 'jugado');
+INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, penales_local, penales_visitante, estado) VALUES (@t, 1, '2026-10-10 12:00:00', @c2, @a2, @e3, @e4, 1, 3, NULL, NULL, 'jugado');
 SET @p2 = LAST_INSERT_ID();
 INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p2, @e3, @j3_9, 5);
 INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p2, @e4, @j4_7, 38);
@@ -249,19 +249,19 @@ INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p2, @e4,
 INSERT INTO tarjetas (partido_id, jugadora_id, tipo, minuto, motivo) VALUES (@p2, @j3_8, 'amarilla', 85, 'Falta táctica');
 
 -- Jornada 2
-INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, estado) VALUES (@t, 2, '2026-10-17 10:00:00', @c1, @a1, @e5, @e1, 1, 0, 'jugado');
+INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, penales_local, penales_visitante, estado) VALUES (@t, 2, '2026-10-17 10:00:00', @c1, @a1, @e5, @e1, 1, 0, NULL, NULL, 'jugado');
 SET @p3 = LAST_INSERT_ID();
 INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p3, @e5, @j5_10, 51);
 INSERT INTO tarjetas (partido_id, jugadora_id, tipo, minuto, motivo) VALUES (@p3, @j1_4, 'amarilla', 26, 'Falta táctica');
 INSERT INTO tarjetas (partido_id, jugadora_id, tipo, minuto, motivo) VALUES (@p3, @j1_10, 'amarilla', 85, 'Juego brusco');
-INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, estado) VALUES (@t, 2, '2026-10-17 12:00:00', @c2, @a2, @e2, @e3, 0, 0, 'jugado');
+INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, penales_local, penales_visitante, estado) VALUES (@t, 2, '2026-10-17 12:00:00', @c2, @a2, @e2, @e3, 0, 0, 3, 5, 'jugado');
 SET @p4 = LAST_INSERT_ID();
 INSERT INTO tarjetas (partido_id, jugadora_id, tipo, minuto, motivo) VALUES (@p4, @j2_14, 'roja', 26, 'Pérdida de tiempo');
 INSERT INTO tarjetas (partido_id, jugadora_id, tipo, minuto, motivo) VALUES (@p4, @j3_7, 'amarilla', 68, 'Pérdida de tiempo');
 
 -- Jornada 3
 INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, estado, equipo_ausente_id, observaciones) VALUES (@t, 3, '2026-10-24 10:00:00', @c1, @a1, @e4, @e5, 3, 0, 'default', @e5, 'El equipo visitante no se presentó.');
-INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, estado) VALUES (@t, 3, '2026-10-24 12:00:00', @c2, @a2, @e1, @e3, 1, 1, 'jugado');
+INSERT INTO partidos (temporada_id, jornada, fecha_hora, cancha_id, arbitro_id, equipo_local_id, equipo_visitante_id, goles_local, goles_visitante, penales_local, penales_visitante, estado) VALUES (@t, 3, '2026-10-24 12:00:00', @c2, @a2, @e1, @e3, 1, 1, 3, 5, 'jugado');
 SET @p6 = LAST_INSERT_ID();
 INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p6, @e1, @j1_9, 34);
 INSERT INTO goles (partido_id, equipo_id, jugadora_id, minuto) VALUES (@p6, @e3, @j3_7, 32);

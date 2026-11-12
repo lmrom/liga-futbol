@@ -1,12 +1,15 @@
+<!-- Portada -->
 <section class="bg-liga-gradiente text-white text-center py-5">
   <div class="container py-5">
     <h1 class="display-4 fw-bold">Liga de Fútbol Femenil</h1>
-    <p class="lead fs-3 fst-italic">"Es una liga para mujeres de mujeres"</p>
-    <p class="mb-4">¿Tienes un equipo o quieres formar uno? ¡Únete a la temporada y vive la pasión del fútbol!</p>
+    <p class="lead fs-3 fst-italic">"Comunidad de mujeres para mujeres entre mujeres"</p>
+    <p class="fs-5 fw-bold mb-1">No es una liga más.</p>
+    <p class="mb-4">Más que fútbol, es una comunidad. ¡Únete y vive la pasión con nosotras!</p>
     <a routerLink="/inscripcion" class="btn btn-light btn-lg fw-bold px-4">Enviar solicitud de inscripción</a>
   </div>
 </section>
 
+<!-- Qué ofrecemos -->
 <section class="container py-5">
   <div class="row text-center g-4">
     <div class="col-md-4">
@@ -31,15 +34,69 @@
       <div class="card h-100 shadow-sm border-0">
         <div class="card-body">
           <div class="fs-1">💜</div>
-          <h5 class="card-title fw-bold">Comunidad</h5>
-          <p class="card-text">Un espacio seguro, organizado y dirigido por mujeres para mujeres.</p>
+          <h5 class="card-title fw-bold">Más que fútbol, comunidad</h5>
+          <p class="card-text">Un espacio seguro, organizado y dirigido por mujeres, para mujeres, entre mujeres.</p>
         </div>
       </div>
     </div>
   </div>
+</section>
+
+<!-- Anuncios por mes -->
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+      <h3 class="fw-bold text-liga m-0">📢 Anuncios</h3>
+      <div class="btn-group">
+        <button class="btn btn-outline-secondary" (click)="cambiarMes(-1)">‹</button>
+        <span class="btn btn-outline-secondary disabled text-capitalize fw-bold">{{ mes() | date: 'MMMM yyyy' }}</span>
+        <button class="btn btn-outline-secondary" (click)="cambiarMes(1)">›</button>
+      </div>
+    </div>
+    <div class="row g-3">
+      @for (a of anuncios(); track a.id) {
+        <div class="col-md-6">
+          <div class="card h-100 shadow-sm border-0 border-start border-4 border-primary">
+            <div class="card-body">
+              <small class="text-muted">{{ a.fecha | date: 'dd/MM/yyyy' }}</small>
+              <h5 class="card-title fw-bold">{{ a.titulo }}</h5>
+              <p class="card-text">{{ a.contenido }}</p>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <p class="text-muted">No hay anuncios en este mes.</p>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Multimedia -->
+<section class="container py-5">
+  <h3 class="fw-bold text-liga mb-4">📸 Fotos y videos de la liga</h3>
+  <div class="row g-3">
+    @for (m of multimedia(); track m.id) {
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+          @if (m.tipo === 'imagen') {
+            <img [src]="'/api/' + m.url" class="card-img-top object-fit-cover" height="220" [alt]="m.titulo ?? 'Foto de la liga'">
+          } @else if (m.embed) {
+            <div class="ratio ratio-16x9">
+              <iframe [src]="m.embed" [title]="m.titulo ?? 'Video de la liga'" allowfullscreen></iframe>
+            </div>
+          }
+          @if (m.titulo) {
+            <div class="card-body py-2"><small class="fw-bold">{{ m.titulo }}</small></div>
+          }
+        </div>
+      </div>
+    } @empty {
+      <p class="text-muted">Pronto compartiremos fotos y videos de nuestros partidos.</p>
+    }
+  </div>
 
   <div class="text-center mt-5">
-    <h3 class="fw-bold text-liga">¿Lista para jugar?</h3>
+    <h3 class="fw-bold text-liga">¿Lista para ser parte de la comunidad?</h3>
     <a routerLink="/inscripcion" class="btn btn-liga btn-lg mt-2">¡Inscríbete ahora!</a>
   </div>
 </section>
