@@ -1,26 +1,32 @@
-<div class="container py-5">
-  <h2 class="fw-bold text-liga mb-4">Inscríbete a la liga</h2>
-  <div class="row g-4">
-    <div class="col-md-7">
-      <h5 class="fw-bold">¿Cómo inscribo a mi equipo?</h5>
-      <ol class="list-group list-group-numbered shadow-sm">
-        <li class="list-group-item">Envía tu solicitud con el nombre del equipo y los datos de la delegada.</li>
-        <li class="list-group-item">La administración revisa la solicitud y se pone en contacto contigo.</li>
-        <li class="list-group-item">Al aprobarse, recibirás un usuario y contraseña de delegada.</li>
-        <li class="list-group-item">Inicia sesión para registrar tu equipo y a tus jugadoras.</li>
-      </ol>
-    </div>
-    <div class="col-md-5">
-      <div class="card shadow-sm border-0 bg-liga-gradiente text-white">
-        <div class="card-body p-4">
-          <h5 class="fw-bold">Envía tu solicitud</h5>
-          <p>Escríbenos con el nombre de tu equipo, el nombre de la delegada y un teléfono de contacto.</p>
-          <a class="btn btn-light fw-bold"
-             href="mailto:contacto@ligafemenil.com?subject=Solicitud%20de%20inscripcion&body=Equipo%3A%0ADelegada%3A%0ATelefono%3A">
-            Enviar solicitud por correo
-          </a>
-        </div>
-      </div>
-    </div>
+<section class="campo campo--rosa campo--cabeza cabeza">
+  <p class="titulillo aparece">Inscripción a la liga</p>
+  <h1 class="rotulo rotulo--xl"><span class="sube"><span>Juega</span></span></h1>
+  <div class="cabeza__pie aparece" [style.--i]="2">
+    <p class="parrafo parrafo--grande">¿Tienes un equipo o quieres formar uno? Así entras.</p>
+    <span class="mano">son 4 pasos</span>
   </div>
-</div>
+</section>
+
+<section class="campo campo--crema campo--aire doble">
+  <p class="titulillo" appRevelar="izquierda">¿Cómo inscribo a mi equipo?</p>
+  <ol class="pasos">
+    @for (paso of pasos; track paso) {
+      <li appRevelar="izquierda" [orden]="$index">
+        <span class="rotulo">{{ $index + 1 }}</span>
+        <p class="parrafo">{{ paso }}</p>
+      </li>
+    }
+  </ol>
+</section>
+
+<section class="campo campo--negro campo--aire solicitud">
+  <div>
+    <p class="titulillo" appRevelar="izquierda">Primer paso</p>
+    <h2 class="rotulo rotulo--l" appRevelar>Envía tu<br>solicitud</h2>
+  </div>
+  <div class="solicitud__lado" appRevelar [orden]="1">
+    <p class="parrafo">Escríbenos con el nombre de tu equipo, el nombre de la delegada y un teléfono de contacto.</p>
+    <a class="boton boton--amarillo" [href]="correo"><span>Enviar solicitud por correo</span><i></i></a>
+    <p class="mono">¿Ya eres delegada? <a class="enlace" routerLink="/login">Inicia sesión</a></p>
+  </div>
+</section>

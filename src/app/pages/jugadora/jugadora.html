@@ -1,12 +1,29 @@
-<div class="container py-5">
-  @if (error()) {
-    <div class="alert alert-danger">{{ error() }}</div>
-  } @else if (datos(); as d) {
-    <h2 class="fw-bold text-liga mb-4">
-      {{ d.jugadora.nombre }} {{ d.jugadora.apellido_paterno }} {{ d.jugadora.apellido_materno }}
-    </h2>
-    <app-estadisticas-jugadora [stats]="d.estadisticas" />
-  } @else {
-    <p class="text-muted">Cargando...</p>
+<section class="campo campo--rosa campo--cabeza cabeza">
+  <p class="titulillo aparece">Ficha de jugadora</p>
+  @if (datos()) {
+    <h1 class="rotulo rotulo--xl ficha__nombre"><span class="sube"><span>{{ nombre() }}</span></span></h1>
+    <div class="cabeza__pie aparece" [style.--i]="2">
+      @if (actual(); as a) {
+        <p class="mono">{{ a.equipo }} · {{ a.posicion }} · {{ a.temporada }}</p>
+      }
+      <a class="enlace" routerLink="/clasificacion">Volver a la tabla</a>
+    </div>
+  } @else if (!error()) {
+    <div class="cargando" role="status"><span class="solo-lectores">Cargando ficha…</span></div>
   }
-</div>
+</section>
+
+<section class="campo campo--crema campo--aire">
+  @if (error()) {
+    <p class="fallo" role="alert">{{ error() }}</p>
+  } @else if (datos(); as d) {
+    <app-estadisticas-jugadora [stats]="d.estadisticas" [publico]="true" />
+
+    <p class="mono mono--tenue ficha__privacidad">
+      Por privacidad esta ficha no lleva fotografía ni datos personales: solo el nombre público y lo que pasó en la cancha.
+      @if (puedeVerPrivado()) {
+        <a class="enlace" [routerLink]="['/jugadora', id, 'privado']">Ver perfil privado</a>
+      }
+    </p>
+  }
+</section>

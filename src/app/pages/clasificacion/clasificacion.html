@@ -1,60 +1,78 @@
-<div class="container py-5">
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-    <h2 class="fw-bold text-liga m-0">Clasificación</h2>
-    <select class="form-select w-auto" [(ngModel)]="temporadaId" (change)="cargar()">
-      @for (t of temporadas(); track t.id) {
-        <option [value]="t.id">{{ t.nombre }}</option>
-      }
-    </select>
+<section class="campo campo--morado campo--cabeza cabeza">
+  <p class="titulillo aparece">Tabla general</p>
+  <h1 class="rotulo rotulo--xl"><span class="sube"><span>La tabla</span></span></h1>
+  <div class="cabeza__pie aparece" [style.--i]="2">
+    <p class="mono">No hay empates · un partido igualado se define en penales</p>
+    @if (temporadas().length > 1) {
+      <select class="selector" aria-label="Temporada" [(ngModel)]="temporadaId" (change)="cargar()">
+        @for (t of temporadas(); track t.id) {
+          <option [value]="t.id">{{ t.nombre }}</option>
+        }
+      </select>
+    } @else if (temporadas()[0]; as t) {
+      <span class="mono">{{ t.nombre }}</span>
+    }
   </div>
+</section>
 
-  <div class="row g-4">
-    <div class="col-lg-8">
-      <div class="table-responsive">
-        <table class="table table-striped align-middle text-center">
-          <thead class="table-dark">
-            <tr>
-              <th>#</th><th class="text-start">Equipo</th><th>PJ</th><th>PG</th><th>PGP</th><th>PPP</th>
-              <th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
+<section class="campo campo--crema campo--aire">
+  @if (error()) {
+    <p class="fallo" role="alert">{{ error() }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></p>
+  } @else if (cargando()) {
+    <div class="cargando" role="status"><span class="solo-lectores">Cargando la tabla…</span></div>
+  } @else {
+    <div class="tabla-caja" appRevelar>
+      <table class="tabla posiciones">
+        <thead>
+          <tr>
+            <th>#</th><th class="izq">Equipo</th>
+            <th title="Partidos jugados">PJ</th><th title="Ganados">G</th><th title="Ganados en penales">GP</th>
+            <th title="Perdidos en penales">PP</th><th title="Perdidos">P</th>
+            <th class="extra" title="Goles a favor">GF</th><th class="extra" title="Goles en contra">GC</th>
+            <th title="Diferencia de goles">DG</th><th title="Puntos">PTS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of tabla(); track e.equipo_id; let i = $index) {
+            <tr [class.lider]="i === 0 && e.PJ > 0" [style.--i]="i">
+              <td class="rotulo lugar">{{ i + 1 }}</td>
+              <td class="izq equipo">{{ e.equipo }} @if (i === 0 && e.PJ > 0) { <span class="sello sello--tinta">Líder</span> }</td>
+              <td>{{ e.PJ }}</td><td>{{ e.PG }}</td><td>{{ e.PGP }}</td><td>{{ e.PPP }}</td><td>{{ e.PP }}</td>
+              <td class="extra">{{ e.GF }}</td><td class="extra">{{ e.GC }}</td>
+              <td>{{ e.DG > 0 ? '+' + e.DG : e.DG }}</td>
+              <td class="rotulo puntos">{{ e.PTS }}</td>
             </tr>
-          </thead>
-          <tbody>
-            @for (e of tabla(); track e.equipo_id; let i = $index) {
-              <tr>
-                <td>{{ i + 1 }}</td>
-                <td class="text-start fw-bold">{{ e.equipo }}</td>
-                <td>{{ e.PJ }}</td><td>{{ e.PG }}</td><td>{{ e.PGP }}</td><td>{{ e.PPP }}</td><td>{{ e.PP }}</td>
-                <td>{{ e.GF }}</td><td>{{ e.GC }}</td><td>{{ e.DG }}</td>
-                <td class="fw-bold text-liga">{{ e.PTS }}</td>
-              </tr>
-            } @empty {
-              <tr><td colspan="11" class="text-muted">Aún no hay equipos inscritos.</td></tr>
-            }
-          </tbody>
-        </table>
-      </div>
-      <small class="text-muted">
-        PJ: jugados · PG: ganados · PGP: ganados en penales · PPP: perdidos en penales · PP: perdidos · GF/GC: goles a favor/en contra · DG: diferencia
-      </small>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="card shadow-sm">
-        <div class="card-header bg-liga text-white fw-bold">⚽ Tabla de goleo</div>
-        <ul class="list-group list-group-flush">
-          @for (g of goleo(); track $index) {
-            <li class="list-group-item d-flex justify-content-between">
-              <span>
-                <a [routerLink]="['/jugadora', g.jugadora_id]" class="text-liga fw-bold text-decoration-none">{{ g.jugadora }}</a>
-                <small class="text-muted">({{ g.equipo }})</small>
-              </span>
-              <span class="badge bg-liga rounded-pill">{{ g.goles }}</span>
-            </li>
           } @empty {
-            <li class="list-group-item text-muted">Sin goles registrados.</li>
+            <tr><td colspan="11" class="mono">Aún no hay equipos inscritos.</td></tr>
           }
-        </ul>
-      </div>
+        </tbody>
+      </table>
     </div>
+    <p class="mono mono--tenue leyenda">
+      PJ jugados · G ganados · GP ganados en penales · PP perdidos en penales · P perdidos · GF/GC goles a favor/en contra · DG diferencia
+    </p>
+  }
+</section>
+
+<section class="campo campo--negro campo--aire doble">
+  <div class="goleo__titulo">
+    <p class="titulillo" appRevelar="izquierda">Tabla de goleo</p>
+    <h2 class="rotulo rotulo--l" appRevelar>Goleo</h2>
+    <p class="mano">toca un nombre<br>para ver su ficha</p>
   </div>
-</div>
+
+  <ol class="goleo">
+    @for (g of goleo(); track g.jugadora_id; let i = $index) {
+      <li appRevelar="izquierda" [orden]="i">
+        <a [routerLink]="['/jugadora', g.jugadora_id]" [style.--parte]="parte(g.goles)">
+          <span class="mono">({{ i + 1 }})</span>
+          <span class="goleo__nombre">{{ nombrePublico(g.jugadora) }}</span>
+          <span class="mono goleo__equipo">{{ g.equipo }}</span>
+          <span class="rotulo goleo__goles">{{ g.goles }}</span>
+        </a>
+      </li>
+    } @empty {
+      <li class="vacio">Sin goles registrados.</li>
+    }
+  </ol>
+</section>

@@ -1,0 +1,173 @@
+.cabeza__pie .mano {
+  color: var(--hueso);
+}
+
+.con-barra {
+  padding-bottom: 9rem;
+}
+
+.fichas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--negro);
+}
+
+/* Cada especialista es un renglón ancho: foto · quién es · precio y elegir */
+.ficha {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.5rem 0;
+  border-bottom: 2px solid var(--negro);
+}
+
+.ficha::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--margen) * -1);
+  z-index: -1;
+  background: var(--rosa);
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 0.6s var(--golpe);
+}
+
+.ficha:hover::before,
+.ficha--elegida::before {
+  scale: 1 1;
+}
+
+.ficha--elegida::before {
+  background: var(--amarillo);
+}
+
+.ficha__foto {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  width: min(100%, 14rem);
+  overflow: hidden;
+  border: 2px solid var(--negro);
+  background: var(--morado);
+  color: var(--hueso);
+}
+
+.ficha__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.1);
+  transition: filter 0.4s, scale 0.6s var(--suave);
+}
+
+.ficha:hover .ficha__foto img {
+  filter: none;
+  scale: 1.05;
+}
+
+.ficha__foto .rotulo {
+  font-size: 4.5rem;
+}
+
+.ficha__numero {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.4rem;
+}
+
+.ficha__cuerpo {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.ficha__cuerpo p {
+  margin: 0;
+}
+
+.ficha__cualidades {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ficha__cualidades li::before {
+  content: '✓ ';
+}
+
+.ficha__lado {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  justify-items: start;
+}
+
+.ficha__lado p {
+  margin: 0;
+}
+
+.ficha__precio {
+  font-stretch: 115%;
+  font-weight: 850;
+  font-size: 1.35rem;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 860px) {
+  .ficha {
+    grid-template-columns: 12rem 1fr 15rem;
+    column-gap: 3vw;
+    align-items: start;
+  }
+
+  .ficha__lado {
+    justify-items: end;
+    text-align: right;
+  }
+}
+
+/* Barra fija con la especialista elegida */
+.contacto {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+  padding: 0.9rem var(--margen);
+  border-top: 2px solid var(--negro);
+  background: var(--negro);
+  color: var(--hueso);
+  animation: contacto-sube 0.55s var(--golpe) both;
+}
+
+@keyframes contacto-sube {
+  from { translate: 0 100%; }
+}
+
+.contacto p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.contacto__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.contacto .boton {
+  border-color: var(--hueso);
+}

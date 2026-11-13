@@ -1,0 +1,77 @@
+/* =====================================================================
+   PÁGINAS INTERIORES públicas: cabeza con rótulo gigante y listas con reglas
+   ===================================================================== */
+.cabeza {
+  display: grid;
+  /* el rótulo gigante se corta en la orilla, sin ensanchar el resto */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  overflow: hidden;
+}
+
+.cabeza .rotulo--xl {
+  margin: 0 0 -0.14em -0.04em;
+  white-space: nowrap;
+}
+
+.cabeza__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.cabeza__filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Dos columnas: etiqueta a la izquierda, contenido a la derecha */
+.doble {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .doble {
+    grid-template-columns: minmax(12rem, 1fr) 3fr;
+    column-gap: 3vw;
+    align-items: start;
+  }
+}
+
+/* Tabla pública: reglas negras, sin cajas */
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 2px solid var(--tinta);
+}
+
+.tabla th {
+  padding: 0.7rem 0.6rem 0.5rem;
+  border-bottom: 2px solid var(--tinta);
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.tabla td {
+  padding: 0.85rem 0.6rem 0.75rem;
+  border-bottom: 1.5px solid var(--tinta);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabla .izq {
+  text-align: left;
+}
+
+.tabla-caja {
+  overflow-x: auto;
+}

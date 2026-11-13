@@ -1,41 +1,77 @@
-<div class="container py-5">
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-    <h2 class="fw-bold text-liga m-0">Partidos</h2>
-    <select class="form-select w-auto" [(ngModel)]="temporadaId" (change)="cargar()">
-      @for (t of temporadas(); track t.id) {
-        <option [value]="t.id">{{ t.nombre }}</option>
+<section class="campo campo--amarillo campo--cabeza cabeza">
+  <p class="titulillo aparece">Calendario y resultados</p>
+  <h1 class="rotulo rotulo--xl"><span class="sube"><span>Partidos</span></span></h1>
+  <div class="cabeza__pie aparece" [style.--i]="2">
+    <div class="cabeza__filtros" role="group" aria-label="Filtrar partidos">
+      @for (f of filtros; track f.valor) {
+        <button type="button" class="enlace" [attr.aria-pressed]="filtro() === f.valor" (click)="filtro.set(f.valor)">{{ f.texto }}</button>
       }
-    </select>
-  </div>
-
-  <div class="table-responsive">
-    <table class="table table-hover align-middle text-center">
-      <thead class="table-dark">
-        <tr>
-          <th>Jornada</th><th>Fecha</th><th class="text-end">Local</th><th>Marcador</th>
-          <th class="text-start">Visitante</th><th>Cancha</th><th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (p of partidos(); track p.id) {
-          <tr>
-            <td>{{ p.jornada }}</td>
-            <td>{{ p.fecha_hora ? (p.fecha_hora | date: 'dd/MM/yyyy HH:mm') : 'Por definir' }}</td>
-            <td class="text-end fw-bold">{{ p.local }}</td>
-            <td class="fs-5">
-              @if (p.goles_local !== null) { {{ p.goles_local }} - {{ p.goles_visitante }} } @else { vs }
-              @if (p.penales_local !== null) {
-                <small class="d-block text-muted">Penales {{ p.penales_local }} - {{ p.penales_visitante }}</small>
-              }
-            </td>
-            <td class="text-start fw-bold">{{ p.visitante }}</td>
-            <td>{{ p.cancha ?? '—' }}</td>
-            <td><span class="badge text-bg-secondary text-capitalize">{{ p.estado }}</span></td>
-          </tr>
-        } @empty {
-          <tr><td colspan="7" class="text-muted">Aún no hay partidos programados.</td></tr>
+    </div>
+    @if (temporadas().length > 1) {
+      <select class="selector" aria-label="Temporada" [(ngModel)]="temporadaId" (change)="cargar()">
+        @for (t of temporadas(); track t.id) {
+          <option [value]="t.id">{{ t.nombre }}</option>
         }
-      </tbody>
-    </table>
+      </select>
+    } @else if (temporadas()[0]; as t) {
+      <span class="mono">{{ t.nombre }}</span>
+    }
   </div>
-</div>
+</section>
+
+<section class="campo campo--crema campo--aire">
+  @if (error()) {
+    <p class="fallo" role="alert">{{ error() }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></p>
+  } @else if (cargando()) {
+    <div class="cargando" role="status"><span class="solo-lectores">Cargando partidos…</span></div>
+  } @else {
+    @for (j of jornadas(); track j.numero) {
+      <div class="jornada">
+        <h2 class="jornada__titulo" appRevelar>
+          <span class="rotulo">{{ j.numero < 10 ? '0' + j.numero : j.numero }}</span>
+          <span class="mono">Jornada</span>
+        </h2>
+
+        <ol class="partidos">
+          @for (p of j.partidos; track p.id) {
+            @let gana = ganador(p);
+            <li class="partido" appRevelar="izquierda" [orden]="$index">
+              <p class="mono partido__fecha">
+                {{ p.fecha_hora ? (p.fecha_hora | date: 'EEE d MMM') : 'Por definir' }}
+                @if (p.fecha_hora) { <span>{{ p.fecha_hora | date: 'HH:mm' }} h</span> }
+              </p>
+
+              <p class="partido__equipo partido__equipo--local" [class.partido__equipo--pierde]="gana === 'visitante'">{{ p.local }}</p>
+
+              <p class="rotulo partido__marcador">
+                @if (jugado(p)) {
+                  <span [class.pierde]="gana === 'visitante'">{{ p.goles_local }}</span>
+                  <i>–</i>
+                  <span [class.pierde]="gana === 'local'">{{ p.goles_visitante }}</span>
+                } @else {
+                  <i class="mono">vs</i>
+                }
+              </p>
+
+              <p class="partido__equipo" [class.partido__equipo--pierde]="gana === 'local'">{{ p.visitante }}</p>
+
+              <p class="mono partido__pie">
+                <span>{{ p.cancha ?? '—' }}</span>
+                @if (p.penales_local !== null) {
+                  <span class="sello">Penales {{ p.penales_local }}–{{ p.penales_visitante }}</span>
+                } @else if (p.estado === 'default') {
+                  <span class="sello">Default</span>
+                } @else if (p.estado !== 'jugado') {
+                  <span class="sello sello--tinta">{{ p.estado }}</span>
+                }
+              </p>
+            </li>
+          }
+        </ol>
+      </div>
+    } @empty {
+      <p class="vacio">{{ filtro() === 'todos' ? 'Aún no hay partidos programados.' : 'No hay partidos con ese filtro.' }}</p>
+    }
+    <p class="mono mono--tenue nota">* No hay empates: si el marcador queda igualado, el partido se define en penales.</p>
+  }
+</section>

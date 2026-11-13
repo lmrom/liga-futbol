@@ -1,20 +1,36 @@
-<div class="container py-5">
-  <h2 class="fw-bold text-liga mb-4">Sobre Nosotros</h2>
-  <div class="row g-4">
-    <div class="col-md-6">
-      <p class="lead"><strong>Comunidad de mujeres para mujeres entre mujeres.</strong></p>
-      <p class="fw-bold text-liga">No es una liga más: más que fútbol, es una comunidad.</p>
-      <p>
-        Nuestro objetivo es ofrecer un espacio seguro, organizado y competitivo donde jugadoras de todas las edades
-        y niveles puedan disfrutar del fútbol, hacer equipo y crecer dentro y fuera de la cancha.
-      </p>
-    </div>
-    <div class="col-md-6">
-      <ul class="list-group shadow-sm">
-        <li class="list-group-item"><strong>Misión:</strong> impulsar el fútbol femenil en nuestra comunidad.</li>
-        <li class="list-group-item"><strong>Visión:</strong> ser la liga de referencia para mujeres en la región.</li>
-        <li class="list-group-item"><strong>Valores:</strong> respeto, compañerismo y juego limpio.</li>
-      </ul>
-    </div>
+<section class="campo campo--verde campo--cabeza cabeza">
+  <p class="titulillo aparece">Sobre nosotras</p>
+  <h1 class="rotulo rotulo--xl"><span class="sube"><span>Nosotras</span></span></h1>
+  <div class="cabeza__pie aparece" [style.--i]="2">
+    <p class="parrafo parrafo--grande">Comunidad de mujeres para mujeres entre mujeres.</p>
+    <span class="mano">más que fútbol ♥</span>
   </div>
-</div>
+</section>
+
+<section class="campo campo--crema campo--aire doble">
+  <p class="titulillo" appRevelar="izquierda">(1) Por qué existimos</p>
+  <div class="historia">
+    <p class="parrafo parrafo--grande" appRevelar>No es una liga más: más que fútbol, es una comunidad.</p>
+    <p class="parrafo" appRevelar [orden]="1">
+      Nuestro objetivo es ofrecer un espacio seguro, organizado y competitivo donde jugadoras de todas las edades
+      y niveles puedan disfrutar del fútbol, hacer equipo y crecer dentro y fuera de la cancha.
+    </p>
+  </div>
+</section>
+
+<section class="campo campo--crema principios-seccion">
+  <ol class="principios">
+    @for (p of principios; track p.titulo) {
+      <li appRevelar="izquierda" [orden]="$index">
+        <span class="mono">({{ $index + 2 }})</span>
+        <h2 class="rotulo rotulo--l">{{ p.titulo }}</h2>
+        <p class="parrafo">{{ p.texto }}</p>
+      </li>
+    }
+  </ol>
+</section>
+
+<section class="campo campo--rosa campo--aire cierre">
+  <p class="rotulo rotulo--l" appRevelar>¿Juegas?</p>
+  <a class="boton" routerLink="/inscripcion" appRevelar [orden]="1"><span>Súmate con tu equipo</span><i></i></a>
+</section>

@@ -1,0 +1,74 @@
+:host {
+  display: block;
+  --tinta: var(--negro);
+}
+
+/* Números grandes separados por reglas, sin cajas */
+.datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  margin: 0 0 2.5rem;
+  border-top: 2px solid var(--negro);
+  border-left: 2px solid var(--negro);
+}
+
+.dato {
+  display: grid;
+  gap: 1.5rem;
+  align-content: space-between;
+  min-height: 9rem;
+  padding: 0.8rem 0.9rem 0.6rem;
+  border-right: 2px solid var(--negro);
+  border-bottom: 2px solid var(--negro);
+  transition: background 0.2s;
+  container-type: inline-size;
+}
+
+.dato:hover {
+  background: var(--hueso);
+}
+
+/* El número ocupa lo que cabe en su casilla según cuántas cifras tenga
+   (270 minutos no debe chocar con la casilla de al lado) */
+.dato dd {
+  margin: 0;
+  white-space: nowrap;
+  font-size: min(4.25rem, 100cqi / (var(--cifras, 1) * 0.8 + 0.15));
+  font-variant-numeric: tabular-nums;
+}
+
+.dato--amarillo { background: var(--amarillo); }
+.dato--naranja { background: var(--naranja); }
+
+/* Tarjetas: un cartón del color junto al número */
+.dato--carton dd,
+.dato--carton-roja dd {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dato--carton dd::after,
+.dato--carton-roja dd::after {
+  content: '';
+  width: 1.1rem;
+  height: 1.6rem;
+  border: 2px solid var(--negro);
+  background: var(--amarillo);
+  rotate: 8deg;
+}
+
+.dato--carton-roja dd::after {
+  background: var(--naranja);
+}
+
+.equipos__titulo {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.equipo {
+  font-stretch: 112%;
+  font-weight: 800;
+  text-transform: uppercase;
+}

@@ -1,28 +1,24 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <div class="card shadow-sm">
-        <div class="card-body p-4">
-          <h2 class="fw-bold text-liga text-center mb-4">Iniciar sesión</h2>
-          @if (error()) {
-            <div class="alert alert-danger">{{ error() }}</div>
-          }
-          <form (ngSubmit)="entrar()">
-            <div class="mb-3">
-              <label class="form-label">Correo</label>
-              <input type="email" class="form-control" name="correo" [(ngModel)]="correo" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Contraseña</label>
-              <input type="password" class="form-control" name="password" [(ngModel)]="password" required>
-            </div>
-            <button class="btn btn-liga w-100">Entrar</button>
-          </form>
-          <p class="text-muted small text-center mt-3 mb-0">
-            Acceso solo para administración y delegadas de equipo.
-          </p>
-        </div>
-      </div>
-    </div>
+<section class="campo campo--negro acceso">
+  <div class="acceso__texto">
+    <p class="titulillo aparece">Acceso privado</p>
+    <h1 class="rotulo rotulo--l"><span class="sube"><span>Entrar</span></span></h1>
+    <p class="parrafo aparece" [style.--i]="2">
+      Solo para la administración y las delegadas de equipo. Aquí se cuidan los datos personales de las jugadoras.
+    </p>
   </div>
-</div>
+
+  <form class="acceso__forma aparece" [style.--i]="3" (ngSubmit)="entrar()">
+    @if (error()) {
+      <p class="fallo" role="alert">{{ error() }}</p>
+    }
+    <label>
+      <span class="mono">Correo</span>
+      <input type="email" name="correo" autocomplete="username" [(ngModel)]="correo" required>
+    </label>
+    <label>
+      <span class="mono">Contraseña</span>
+      <input type="password" name="password" autocomplete="current-password" [(ngModel)]="password" required>
+    </label>
+    <button class="boton boton--amarillo"><span>Entrar</span><i></i></button>
+  </form>
+</section>

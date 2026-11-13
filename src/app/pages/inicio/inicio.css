@@ -1,0 +1,750 @@
+/* =====================================================================
+   (01) PORTADA — campo morado. Texto chico a la izquierda, arco al centro,
+   datos a la derecha y la premisa gigante de lado a lado en la base.
+   ===================================================================== */
+.portada {
+  display: grid;
+  /* minmax(0, …): la frase gigante no debe ensanchar la columna en el celular */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  min-height: 100svh;
+  padding-top: calc(var(--alto-barra) + 1.5rem);
+  overflow: hidden;
+}
+
+.portada__texto {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  justify-items: start;
+}
+
+.portada__premisa {
+  margin-top: 0.5rem;
+}
+
+.portada__texto .parrafo {
+  max-width: 24ch;
+}
+
+/* El arco: una portería. Adentro va el video o el balón. */
+.portada__arco {
+  position: relative;
+  justify-self: center;
+  width: min(70vw, 20rem);
+  height: 46svh;
+}
+
+.arco {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 2px solid var(--negro);
+  border-bottom: 0;
+  border-radius: 50vw 50vw 0 0;
+  background: var(--amarillo);
+  color: var(--negro);
+}
+
+.arco__balon {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  width: 78%;
+  translate: -50% -50%;
+  animation: rueda 26s linear infinite;
+}
+
+@keyframes rueda {
+  to { rotate: 360deg; }
+}
+
+/* El reproductor se agranda hasta cubrir el arco, como un video de fondo */
+.arco__video {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 400%;
+  height: 120%;
+  translate: -50% -50%;
+  border: 0;
+  pointer-events: none;
+}
+
+.portada__sello {
+  position: absolute;
+  right: -2.2rem;
+  top: 16%;
+  width: 6.5rem;
+  fill: var(--rosa);
+  animation: rueda 18s linear infinite reverse;
+}
+
+.portada__sello text {
+  fill: var(--negro);
+  font-family: var(--f-mono);
+  font-size: 10.6px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.portada__sello .portada__sello-centro {
+  font-size: 26px;
+}
+
+.portada__datos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin: 0;
+}
+
+/* Si una etiqueta ocupa dos renglones, los números siguen alineados abajo */
+.portada__datos > div {
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.portada__datos dd {
+  margin: 0.5rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.portada__proximo {
+  grid-column: 1 / -1;
+}
+
+.portada__proximo dd {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 1.15rem;
+  line-height: 1.15;
+}
+
+.portada__proximo dd .mono::first-letter {
+  text-transform: uppercase;
+}
+
+/* MÁS QUE FÚTBOL, de borde a borde */
+.portada__gigante {
+  position: relative;
+  align-self: end;
+  margin: 0 calc(var(--margen) * -0.35) -0.12em;
+  font-size: 17.4vw;
+  line-height: 0.82;
+  white-space: nowrap;
+}
+
+.portada__mano {
+  position: absolute;
+  right: 3%;
+  top: -0.9em;
+  color: var(--amarillo);
+  font-size: clamp(2rem, 6.4vw, 6rem);
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  rotate: -5deg;
+}
+
+@media (min-width: 900px) {
+  .portada {
+    grid-template-columns: 1fr minmax(15rem, 25vw) 1fr;
+    grid-template-rows: 1fr auto;
+    column-gap: 3vw;
+    row-gap: 0;
+  }
+
+  .portada__texto {
+    grid-area: 1 / 1;
+    padding-top: 6svh;
+  }
+
+  .portada__arco {
+    grid-area: 1 / 2;
+    align-self: end;
+    width: 100%;
+    height: min(60svh, 42rem);
+    /* El arco se para justo encima de las letras */
+    margin-bottom: 0.9vw;
+  }
+
+  .portada__datos {
+    grid-area: 1 / 3;
+    grid-template-columns: 1fr;
+    justify-self: end;
+    align-content: start;
+    width: min(100%, 15rem);
+    padding-top: 6svh;
+    gap: 1.6rem;
+  }
+
+  .portada__gigante {
+    grid-area: 2 / 1 / 3 / -1;
+    font-size: 8.4vw;
+  }
+
+  .portada__mano {
+    right: 1%;
+    top: -0.75em;
+    font-size: clamp(2.5rem, 4.4vw, 5.5rem);
+  }
+}
+
+@media (max-width: 899px) {
+  .portada__gigante .sube {
+    white-space: normal;
+  }
+
+  .portada__gigante {
+    white-space: normal;
+    font-size: 21vw;
+    padding-top: 1.2em;
+  }
+
+  .portada__mano {
+    top: 0;
+    right: 4%;
+  }
+}
+
+/* Al bajar, el arco se queda un poco atrás y el rótulo se corre */
+@supports (animation-timeline: scroll()) {
+  .arco__balon {
+    animation: rueda linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 220vh;
+  }
+
+  .portada__gigante > .sube {
+    animation: corre linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 100vh;
+  }
+
+  .portada__gigante > .sube > span {
+    animation: sube 1s var(--golpe) calc(270ms + var(--espera, 0ms)) forwards;
+  }
+
+  @keyframes corre {
+    to { translate: -6% 0; }
+  }
+}
+
+/* =====================================================================
+   Encabezado común de sección
+   ===================================================================== */
+.entrada {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+@media (min-width: 900px) {
+  .entrada {
+    grid-template-columns: minmax(12rem, 1fr) 2fr;
+    align-items: start;
+    column-gap: 3vw;
+  }
+
+  .entrada > :nth-child(n + 3) {
+    grid-column: 2;
+  }
+}
+
+/* =====================================================================
+   (02) PILARES — tres renglones enormes; el color entra por la izquierda
+   ===================================================================== */
+.pilares {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--negro);
+}
+
+.pilar {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.5rem 0 1.25rem;
+  border-bottom: 2px solid var(--negro);
+}
+
+.pilar::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--margen) * -1);
+  z-index: -1;
+  background: var(--tono);
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 0.6s var(--golpe);
+}
+
+.pilar:hover::before {
+  scale: 1 1;
+}
+
+.pilar .rotulo {
+  transition: translate 0.6s var(--golpe);
+}
+
+.pilar:hover .rotulo {
+  translate: 1.5vw 0;
+}
+
+@media (min-width: 900px) {
+  .pilar {
+    grid-template-columns: 4rem 1fr minmax(14rem, 22rem);
+    align-items: center;
+    column-gap: 2vw;
+  }
+}
+
+/* =====================================================================
+   (03) CALENDARIO — pista que se recorre de lado, con marcas como de cancha
+   ===================================================================== */
+.calendario {
+  padding-block: clamp(4rem, 9vw, 8rem) clamp(3rem, 6vw, 5rem);
+  overflow: hidden;
+}
+
+.calendario__cabeza {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.calendario__notas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+}
+
+.calendario__notas .mano {
+  color: var(--amarillo);
+}
+
+.calendario a {
+  color: inherit;
+}
+
+@media (min-width: 900px) {
+  .calendario__cabeza {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+
+  .calendario__cabeza .titulillo {
+    grid-column: 1 / -1;
+  }
+}
+
+.pista {
+  display: flex;
+  gap: 0;
+  margin-inline: calc(var(--margen) * -1);
+  padding: 0 var(--margen) 2.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  cursor: grab;
+  /* Marcas de medida en la base, como las de una cancha */
+  background:
+    repeating-linear-gradient(90deg, var(--tenue) 0 1.5px, transparent 1.5px 5rem) 0 100% / auto 1.1rem repeat-x,
+    linear-gradient(var(--tenue), var(--tenue)) 0 100% / 100% 1.5px no-repeat;
+  background-attachment: local;
+}
+
+.pista:active {
+  cursor: grabbing;
+}
+
+.pista::-webkit-scrollbar {
+  display: none;
+}
+
+.tramo {
+  position: relative;
+  flex: none;
+  padding: 0 2.5rem 0 0;
+  margin-right: 2.5rem;
+  border-right: 1.5px solid var(--tenue);
+}
+
+.tramo:last-child {
+  border-right: 0;
+}
+
+/* El número de jornada, enorme y hueco, detrás de los boletos */
+.tramo__numero {
+  position: absolute;
+  left: -0.05em;
+  bottom: -0.1em;
+  font-size: 15rem;
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--tinta) 30%, transparent);
+  user-select: none;
+  pointer-events: none;
+}
+
+.tramo__titulo {
+  margin: 0 0 1rem;
+  color: var(--amarillo);
+}
+
+.tramo__boletos {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 5.5rem;
+}
+
+/* Boleto de partido: papel con dos muescas */
+.boleto {
+  display: grid;
+  gap: 0.55rem;
+  width: 17.5rem;
+  padding: 1rem 1.1rem 0.9rem;
+  background: var(--hueso);
+  color: var(--negro);
+  user-select: none;
+  -webkit-mask:
+    radial-gradient(circle 0.6rem at 0 68%, transparent 97%, #000) 0 0 / 51% 100% no-repeat,
+    radial-gradient(circle 0.6rem at 100% 68%, transparent 97%, #000) 100% 0 / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 0.6rem at 0 68%, transparent 97%, #000) 0 0 / 51% 100% no-repeat,
+    radial-gradient(circle 0.6rem at 100% 68%, transparent 97%, #000) 100% 0 / 51% 100% no-repeat;
+  transition: translate 0.4s var(--suave), rotate 0.4s var(--suave), background 0.2s;
+}
+
+.boleto:hover {
+  translate: 0 -0.5rem;
+  rotate: -1.2deg;
+  background: var(--amarillo);
+}
+
+.boleto--pendiente {
+  background: var(--crema);
+}
+
+.boleto p {
+  margin: 0;
+}
+
+.boleto__fecha::first-letter {
+  text-transform: uppercase;
+}
+
+.boleto__equipo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: 1.2rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.boleto__equipo b {
+  font-size: 2rem;
+  line-height: 0.9;
+}
+
+/* No hay empates: quien pierde se atenúa */
+.boleto__equipo--pierde {
+  opacity: 0.4;
+}
+
+.boleto__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.4rem !important;
+  padding-top: 0.75rem;
+  border-top: 1.5px dashed var(--negro);
+  font-size: 0.6875rem;
+}
+
+.calendario__regla {
+  margin: 1.5rem 0 0;
+}
+
+/* =====================================================================
+   (04) AVISOS — feed tipo muro, mes por mes
+   ===================================================================== */
+.avisos {
+  display: grid;
+  gap: 3rem;
+}
+
+.avisos__lado {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+  justify-items: start;
+}
+
+.avisos__lado .titulillo {
+  width: 100%;
+}
+
+.avisos__lado .rotulo {
+  font-size: clamp(2.6rem, 7vw, 8rem);
+}
+
+.avisos__lado .mano {
+  color: var(--morado);
+}
+
+.avisos__meses {
+  display: grid;
+  width: 100%;
+  margin-top: 1rem;
+  border-top: 2px solid var(--negro);
+}
+
+.avisos__meses button {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0 0.6rem;
+  border: 0;
+  border-bottom: 1.5px solid var(--negro);
+  background: none;
+  color: inherit;
+  text-align: left;
+  transition: padding 0.35s var(--suave), background 0.2s;
+}
+
+.avisos__meses button:hover {
+  padding-inline: 0.75rem;
+  background: var(--negro);
+  color: var(--amarillo);
+}
+
+@media (min-width: 960px) {
+  .avisos {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 40rem);
+    align-items: start;
+    column-gap: 4vw;
+  }
+
+  .avisos__lado {
+    position: sticky;
+    top: calc(var(--alto-barra) + 1.5rem);
+  }
+}
+
+.avisos__mes {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  scroll-margin-top: calc(var(--alto-barra) + 1rem);
+}
+
+.avisos__divisor {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0 0;
+}
+
+.avisos__divisor::after {
+  content: '';
+  flex: 1;
+  height: 1.5px;
+  background: var(--negro);
+}
+
+/* Cada aviso es una hoja pegada un poco chueca; al pasar el cursor se endereza */
+.aviso {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.25rem 1.4rem 1.1rem;
+  border: 2px solid var(--negro);
+  background: var(--hueso);
+}
+
+.aviso.a-la-vista {
+  rotate: -0.6deg;
+  transition-delay: 0ms;
+}
+
+.aviso.a-la-vista:nth-child(odd) {
+  rotate: 0.7deg;
+}
+
+.aviso.a-la-vista:hover {
+  rotate: 0deg;
+  translate: 0 -0.25rem;
+}
+
+.aviso__cabeza {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.aviso__cabeza > span:last-child {
+  display: grid;
+  line-height: 1.2;
+}
+
+.aviso__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 50%;
+  background: var(--negro);
+  color: var(--amarillo);
+  font-size: 0.8rem;
+  letter-spacing: -0.02em;
+}
+
+.aviso h4 {
+  text-wrap: balance;
+}
+
+.aviso__texto {
+  margin: 0;
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+.aviso footer {
+  padding-top: 0.8rem;
+  border-top: 1.5px solid var(--negro);
+}
+
+.avisos__centinela {
+  height: 1px;
+}
+
+.avisos__fin {
+  margin: 1.5rem 0 0;
+  text-align: center;
+}
+
+.fallo .enlace {
+  margin-left: 1rem;
+}
+
+/* =====================================================================
+   (05) MURAL de fotos y videos
+   ===================================================================== */
+.mural {
+  columns: 3 16rem;
+  column-gap: 1.5rem;
+}
+
+.foto {
+  break-inside: avoid;
+  margin: 0 0 1.5rem;
+  padding: 0.6rem 0.6rem 0.9rem;
+  border: 2px solid var(--negro);
+  background: var(--hueso);
+}
+
+.foto.a-la-vista:nth-child(3n + 1) { rotate: -1.4deg; }
+.foto.a-la-vista:nth-child(3n + 2) { rotate: 1deg; }
+.foto.a-la-vista:hover { rotate: 0deg; }
+
+.foto img,
+.foto iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+}
+
+.foto iframe,
+.foto__video {
+  aspect-ratio: 16 / 9;
+}
+
+.foto__video {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--negro);
+  overflow: hidden;
+}
+
+.foto__video img {
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+  transition: scale 0.6s var(--suave), opacity 0.3s;
+}
+
+.foto__video:hover img {
+  scale: 1.06;
+  opacity: 1;
+}
+
+.foto__video span {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.6rem;
+  color: var(--amarillo);
+  font-size: 2.5rem;
+}
+
+.foto figcaption {
+  margin-top: 0.6rem;
+  font-size: 1.5rem;
+  rotate: -1.5deg;
+}
+
+/* =====================================================================
+   (06) ESPECIALISTAS
+   ===================================================================== */
+.especialistas {
+  margin: 0 0 2.5rem;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--negro);
+}
+
+.especialistas a {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  padding: 1.1rem 0 0.9rem;
+  border-bottom: 2px solid var(--negro);
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.25s, color 0.25s, padding 0.45s var(--suave);
+}
+
+.especialistas a > .mono:nth-child(3) {
+  grid-column: 2;
+}
+
+.especialistas__flecha {
+  grid-area: 1 / 3 / 3 / 4;
+  font-size: 2.2rem;
+  transition: translate 0.45s var(--golpe);
+}
+
+.especialistas a:hover {
+  margin-inline: calc(var(--margen) * -1);
+  padding-inline: var(--margen);
+  background: var(--negro);
+  color: var(--naranja);
+}
+
+.especialistas a:hover .especialistas__flecha {
+  translate: 0.6rem 0;
+}

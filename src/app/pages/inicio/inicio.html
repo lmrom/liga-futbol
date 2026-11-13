@@ -1,102 +1,257 @@
-<!-- Portada -->
-<section class="bg-liga-gradiente text-white text-center py-5">
-  <div class="container py-5">
-    <h1 class="display-4 fw-bold">Liga de Fútbol Femenil</h1>
-    <p class="lead fs-3 fst-italic">"Comunidad de mujeres para mujeres entre mujeres"</p>
-    <p class="fs-5 fw-bold mb-1">No es una liga más.</p>
-    <p class="mb-4">Más que fútbol, es una comunidad. ¡Únete y vive la pasión con nosotras!</p>
-    <a routerLink="/inscripcion" class="btn btn-light btn-lg fw-bold px-4">Enviar solicitud de inscripción</a>
+<!-- ============ (01) PORTADA ============ -->
+<section class="campo campo--morado portada">
+  <div class="portada__texto">
+    <p class="mono aparece" [style.--i]="0">(01) {{ temporada()?.nombre ?? 'Liga Mujeres Diversas' }} — México</p>
+    <p class="rotulo rotulo--s portada__premisa">
+      <span class="sube" [style.--i]="1"><span>No es solo</span></span>
+      <span class="sube" [style.--i]="2"><span>una liga.</span></span>
+    </p>
+    <p class="parrafo aparece" [style.--i]="4">Comunidad de mujeres para mujeres entre mujeres.</p>
+    <a class="enlace aparece" [style.--i]="5" routerLink="/inscripcion">Inscribe a tu equipo</a>
   </div>
-</section>
 
-<!-- Qué ofrecemos -->
-<section class="container py-5">
-  <div class="row text-center g-4">
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0">
-        <div class="card-body">
-          <div class="fs-1">⚽</div>
-          <h5 class="card-title fw-bold">Juega cada semana</h5>
-          <p class="card-text">Partidos programados durante toda la temporada en canchas de la ciudad.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0">
-        <div class="card-body">
-          <div class="fs-1">🏆</div>
-          <h5 class="card-title fw-bold">Compite por el título</h5>
-          <p class="card-text">Sigue la tabla de clasificación y lleva a tu equipo a lo más alto.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0">
-        <div class="card-body">
-          <div class="fs-1">💜</div>
-          <h5 class="card-title fw-bold">Más que fútbol, comunidad</h5>
-          <p class="card-text">Un espacio seguro, organizado y dirigido por mujeres, para mujeres, entre mujeres.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Anuncios por mes -->
-<section class="bg-light py-5">
-  <div class="container">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-      <h3 class="fw-bold text-liga m-0">📢 Anuncios</h3>
-      <div class="btn-group">
-        <button class="btn btn-outline-secondary" (click)="cambiarMes(-1)">‹</button>
-        <span class="btn btn-outline-secondary disabled text-capitalize fw-bold">{{ mes() | date: 'MMMM yyyy' }}</span>
-        <button class="btn btn-outline-secondary" (click)="cambiarMes(1)">›</button>
-      </div>
-    </div>
-    <div class="row g-3">
-      @for (a of anuncios(); track a.id) {
-        <div class="col-md-6">
-          <div class="card h-100 shadow-sm border-0 border-start border-4 border-primary">
-            <div class="card-body">
-              <small class="text-muted">{{ a.fecha | date: 'dd/MM/yyyy' }}</small>
-              <h5 class="card-title fw-bold">{{ a.titulo }}</h5>
-              <p class="card-text">{{ a.contenido }}</p>
-            </div>
-          </div>
-        </div>
-      } @empty {
-        <p class="text-muted">No hay anuncios en este mes.</p>
+  <!-- Arco: video de la liga (viene de Multimedia) o, si no hay, el balón girando -->
+  <div class="portada__arco aparece" [style.--i]="2">
+    <div class="arco">
+      @if (videoPortada(); as video) {
+        <iframe class="arco__video" [src]="video" title="Video de la liga" allow="autoplay; encrypted-media"
+                tabindex="-1" aria-hidden="true"></iframe>
+      } @else {
+        <svg class="arco__balon" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="5"
+             stroke-linejoin="round" aria-hidden="true">
+          <circle cx="100" cy="100" r="92" />
+          <path d="M100 66L132.300 89.500L120 127.500H80L67.700 89.500Z" fill="currentColor" />
+          <path d="M100 66V36M132.300 89.500L160.900 80.200M120 127.500L137.600 151.800M80 127.500L62.400 151.800M67.700 89.500L39.100 80.200" />
+          <path d="M62.600 16L100 36L137.400 16M168.400 38.400L160.900 80.200L191.500 109.600M179.700 146L137.600 151.800L119.100 190M80.900 190L62.400 151.800L20.300 146M8.500 109.600L39.100 80.200L31.600 38.400" />
+        </svg>
       }
     </div>
+    <!-- Sello giratorio -->
+    <svg class="portada__sello" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="60" />
+      <path id="vuelta" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0" fill="none" />
+      <text><textPath href="#vuelta">de mujeres · para mujeres · entre mujeres ·</textPath></text>
+      <text class="portada__sello-centro" x="60" y="68" text-anchor="middle">♥</text>
+    </svg>
+  </div>
+
+  <dl class="portada__datos">
+    @for (d of datos(); track d.texto) {
+      <div class="aparece" [style.--i]="$index + 3">
+        <dt class="titulillo">{{ d.texto }}</dt>
+        <dd class="rotulo rotulo--m" [appContador]="d.valor">0</dd>
+      </div>
+    }
+    @if (proximo(); as p) {
+      <div class="aparece portada__proximo" [style.--i]="6">
+        <dt class="titulillo">Próximo partido</dt>
+        <dd>
+          <strong>{{ p.local }} <span class="mono">vs</span> {{ p.visitante }}</strong>
+          <span class="mono">{{ p.fecha_hora | date: "EEE d MMM · HH:mm 'h'" }}@if (p.cancha) { · {{ p.cancha }} }</span>
+        </dd>
+      </div>
+    }
+  </dl>
+
+  <h1 class="rotulo portada__gigante">
+    <span class="sube" [style.--i]="3"><span>Más que fútbol</span></span>
+    <span class="mano portada__mano aparece" [style.--i]="9">es una comunidad</span>
+  </h1>
+</section>
+
+<!-- ============ (02) LO QUE SOMOS ============ -->
+<section class="campo campo--crema campo--aire">
+  <header class="entrada">
+    <p class="titulillo" appRevelar="izquierda">(02) Lo que somos</p>
+    <p class="parrafo parrafo--grande" appRevelar>
+      Comunidad de mujeres para mujeres entre mujeres. Más que fútbol, es una comunidad.
+    </p>
+  </header>
+
+  <ol class="pilares">
+    @for (pilar of pilares; track pilar.titulo) {
+      <li class="pilar" [style.--tono]="pilar.tono" appRevelar="izquierda" [orden]="$index">
+        <span class="mono">({{ $index + 1 }})</span>
+        <h2 class="rotulo rotulo--l">{{ pilar.titulo }}</h2>
+        <p class="parrafo">{{ pilar.texto }}</p>
+      </li>
+    }
+  </ol>
+</section>
+
+<!-- ============ (03) CALENDARIO: pista horizontal por jornada ============ -->
+<section class="campo campo--negro calendario">
+  <header class="calendario__cabeza">
+    <p class="titulillo" appRevelar="izquierda">(03) {{ temporada()?.nombre ?? 'Temporada' }} — Calendario y resultados</p>
+    <h2 class="rotulo rotulo--l rotulo--hueco" appRevelar>Jornadas</h2>
+    <div class="calendario__notas">
+      <span class="mano">arrastra →</span>
+      <a class="enlace" routerLink="/partidos">Todos los partidos</a>
+    </div>
+  </header>
+
+  @if (jornadas().length) {
+    <div #pista class="pista" tabindex="0" role="region" aria-label="Partidos por jornada"
+         (pointermove)="arrastrar($event, pista)">
+      @for (j of jornadas(); track j.numero) {
+        <div class="tramo">
+          <span class="rotulo tramo__numero" aria-hidden="true">{{ j.numero < 10 ? '0' + j.numero : j.numero }}</span>
+          <p class="mono tramo__titulo">Jornada {{ j.numero }}</p>
+          <div class="tramo__boletos">
+            @for (p of j.partidos; track p.id) {
+              @let gana = ganador(p);
+              <article class="boleto" [class.boleto--pendiente]="!jugado(p)">
+                <p class="mono boleto__fecha">
+                  {{ p.fecha_hora ? (p.fecha_hora | date: 'EEE d MMM · HH:mm') : 'Fecha por definir' }}
+                </p>
+                <p class="boleto__equipo" [class.boleto__equipo--pierde]="gana === 'visitante'">
+                  <span>{{ p.local }}</span>
+                  @if (jugado(p)) { <b class="rotulo">{{ p.goles_local }}</b> }
+                </p>
+                <p class="boleto__equipo" [class.boleto__equipo--pierde]="gana === 'local'">
+                  <span>{{ p.visitante }}</span>
+                  @if (jugado(p)) { <b class="rotulo">{{ p.goles_visitante }}</b> }
+                </p>
+                <p class="mono boleto__pie">
+                  <span>{{ p.cancha ?? 'Cancha por definir' }}</span>
+                  @if (p.penales_local !== null) {
+                    <span class="sello">Penales {{ p.penales_local }}–{{ p.penales_visitante }}</span>
+                  } @else if (p.estado === 'default') {
+                    <span class="sello">Default</span>
+                  } @else if (p.estado !== 'jugado' && p.estado !== 'programado') {
+                    <span class="sello sello--tinta">{{ p.estado }}</span>
+                  }
+                </p>
+              </article>
+            }
+          </div>
+        </div>
+      }
+    </div>
+    <p class="mono mono--tenue calendario__regla">
+      * En esta liga no hay empates: si el marcador queda igualado, el partido se define en penales.
+    </p>
+  } @else {
+    <p class="vacio">Aún no hay partidos programados.</p>
+  }
+</section>
+
+<!-- ============ (04) AVISOS: feed por mes con scroll infinito ============ -->
+<section class="campo campo--amarillo campo--aire avisos" id="avisos">
+  <aside class="avisos__lado">
+    <p class="titulillo" appRevelar="izquierda">(04) Avisos del mes</p>
+    <h2 class="rotulo rotulo--l" appRevelar>Avisos</h2>
+    <p class="mano">lo que pasa<br>entre nosotras</p>
+    @if (conAnuncios().length) {
+      <nav class="avisos__meses" aria-label="Meses con avisos">
+        @for (m of conAnuncios(); track m.clave) {
+          <button type="button" class="mono" (click)="irAMes(m.clave)">
+            <span>{{ m.fecha | date: 'MMMM yyyy' }}</span><span>({{ m.anuncios.length }})</span>
+          </button>
+        }
+      </nav>
+    }
+  </aside>
+
+  <div class="avisos__feed">
+    @for (m of conAnuncios(); track m.clave) {
+      <section [id]="'mes-' + m.clave" class="avisos__mes" [attr.aria-label]="m.fecha | date: 'MMMM yyyy'">
+        <h3 class="mono avisos__divisor">{{ m.fecha | date: 'MMMM yyyy' }}</h3>
+        @for (a of m.anuncios; track a.id) {
+          <article class="aviso" appRevelar="crecer" [orden]="$index < 4 ? $index : 0">
+            <header class="aviso__cabeza">
+              <span class="aviso__avatar rotulo" aria-hidden="true">LMD</span>
+              <span>
+                <strong>Liga Mujeres Diversas</strong>
+                <time class="mono mono--tenue" [attr.datetime]="a.fecha">{{ a.fecha | date: "d 'de' MMMM 'de' yyyy" }}</time>
+              </span>
+            </header>
+            <h4 class="rotulo rotulo--s">{{ a.titulo }}</h4>
+            <p class="aviso__texto">{{ a.contenido }}</p>
+            <footer>
+              <button type="button" class="enlace" (click)="compartir(a)">
+                {{ copiado() === a.id ? 'Enlace copiado' : 'Compartir' }}
+              </button>
+            </footer>
+          </article>
+        }
+      </section>
+    }
+
+    @if (cargandoMes()) {
+      <div class="cargando" role="status"><span class="solo-lectores">Cargando avisos…</span></div>
+    }
+    @if (errorAnuncios()) {
+      <p class="fallo" role="alert">
+        {{ errorAnuncios() }}
+        <button type="button" class="enlace" (click)="cargarMesAnterior()">Reintentar</button>
+      </p>
+    } @else if (hayMas()) {
+      <div #centinela class="avisos__centinela" aria-hidden="true"></div>
+    } @else if (conAnuncios().length) {
+      <p class="mono avisos__fin">— Ya viste todos los avisos —</p>
+    } @else {
+      <p class="vacio">Todavía no hay avisos publicados.</p>
+    }
   </div>
 </section>
 
-<!-- Multimedia -->
-<section class="container py-5">
-  <h3 class="fw-bold text-liga mb-4">📸 Fotos y videos de la liga</h3>
-  <div class="row g-3">
-    @for (m of multimedia(); track m.id) {
-      <div class="col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm border-0">
-          @if (m.tipo === 'imagen') {
-            <img [src]="'/api/' + m.url" class="card-img-top object-fit-cover" height="220" [alt]="m.titulo ?? 'Foto de la liga'">
-          } @else if (m.embed) {
-            <div class="ratio ratio-16x9">
-              <iframe [src]="m.embed" [title]="m.titulo ?? 'Video de la liga'" allowfullscreen></iframe>
-            </div>
-          }
-          @if (m.titulo) {
-            <div class="card-body py-2"><small class="fw-bold">{{ m.titulo }}</small></div>
-          }
-        </div>
-      </div>
-    } @empty {
-      <p class="text-muted">Pronto compartiremos fotos y videos de nuestros partidos.</p>
-    }
-  </div>
+<!-- ============ (05) FOTOS Y VIDEOS ============ -->
+<section class="campo campo--rosa campo--aire">
+  <header class="entrada">
+    <p class="titulillo" appRevelar="izquierda">(05) Fotos y videos de la liga</p>
+    <h2 class="rotulo rotulo--l" appRevelar>Así se <br>vive</h2>
+  </header>
 
-  <div class="text-center mt-5">
-    <h3 class="fw-bold text-liga">¿Lista para ser parte de la comunidad?</h3>
-    <a routerLink="/inscripcion" class="btn btn-liga btn-lg mt-2">¡Inscríbete ahora!</a>
-  </div>
+  @if (multimedia().length) {
+    <div class="mural">
+      @for (m of multimedia(); track m.id) {
+        <figure class="foto" appRevelar="crecer" [orden]="$index % 3">
+          @if (m.tipo === 'imagen') {
+            <img [src]="'/api/' + m.url" [alt]="m.titulo ?? 'Foto de la liga'" loading="lazy" decoding="async">
+          } @else if (m.youtubeId) {
+            @if (reproduciendo().includes(m.id)) {
+              <iframe [src]="m.embed" [title]="m.titulo ?? 'Video de la liga'" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            } @else {
+              <button type="button" class="foto__video" (click)="reproducir(m.id)"
+                      [attr.aria-label]="'Reproducir ' + (m.titulo ?? 'video de la liga')">
+                <img [src]="'https://i.ytimg.com/vi/' + m.youtubeId + '/hqdefault.jpg'" alt="" loading="lazy">
+                <span class="rotulo">▶</span>
+              </button>
+            }
+          }
+          @if (m.titulo) { <figcaption class="mano">{{ m.titulo }}</figcaption> }
+        </figure>
+      }
+    </div>
+  } @else {
+    <p class="vacio">Pronto compartiremos fotos y videos de nuestros partidos.</p>
+  }
+</section>
+
+<!-- ============ (06) ENTRENAMIENTO A DOMICILIO ============ -->
+<section class="campo campo--naranja campo--aire">
+  <header class="entrada">
+    <p class="titulillo" appRevelar="izquierda">(06) Servicio adicional</p>
+    <h2 class="rotulo rotulo--l" appRevelar>Entrena<br>en casa</h2>
+    <p class="parrafo" appRevelar>
+      Acondicionamiento físico personalizado y a domicilio. Conoce a cada especialista y elige con quién trabajar.
+    </p>
+  </header>
+
+  @if (entrenadores().length) {
+    <ul class="especialistas">
+      @for (e of entrenadores(); track e.id) {
+        <li appRevelar="izquierda" [orden]="$index">
+          <a routerLink="/entrenamiento">
+            <span class="mono">({{ $index + 1 }})</span>
+            <span class="rotulo rotulo--m">{{ e.nombre }}</span>
+            <span class="mono">{{ e.especialidad }}</span>
+            <span class="especialistas__flecha" aria-hidden="true">→</span>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+  <a class="boton" routerLink="/entrenamiento"><span>Conocer especialistas</span><i></i></a>
 </section>

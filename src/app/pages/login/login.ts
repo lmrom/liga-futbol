@@ -7,6 +7,7 @@ import { Api } from '../../services/api';
   selector: 'app-login',
   imports: [FormsModule],
   templateUrl: './login.html',
+  styleUrl: './login.css',
 })
 export class Login {
   api = inject(Api);

@@ -1,0 +1,91 @@
+/* =====================================================================
+   MOVIMIENTO
+   ===================================================================== */
+
+/* ---------- Entrada al hacer scroll (directiva appRevelar) ----------
+   --i = lugar dentro de un grupo: cada elemento entra un poco después. */
+[data-revelar] {
+  transition:
+    opacity 0.7s var(--suave) calc(var(--i, 0) * 80ms),
+    translate 0.9s var(--suave) calc(var(--i, 0) * 80ms),
+    rotate 0.9s var(--suave) calc(var(--i, 0) * 80ms);
+}
+
+[data-revelar='subir'] { opacity: 0; translate: 0 2.2rem; }
+[data-revelar='crecer'] { opacity: 0; translate: 0 1.5rem; rotate: 3deg; }
+[data-revelar='cortina'] { opacity: 0; translate: 0 -1.5rem; }
+/* Renglones de lista: entran desde la izquierda, uno tras otro */
+[data-revelar='izquierda'] { opacity: 0; translate: -3rem 0; }
+[data-revelar='derecha'] { opacity: 0; translate: 3rem 0; }
+
+[data-revelar].a-la-vista {
+  opacity: 1;
+  translate: 0 0;
+  rotate: 0deg;
+}
+
+/* ---------- Rótulo que sube letra por letra / línea por línea ---------- */
+.sube {
+  display: block;
+  overflow: hidden;
+  /* lugar para los acentos de las mayúsculas (Á, Ú) sin mover el renglón */
+  padding: 0.16em 0 0.06em;
+  margin-top: -0.16em;
+}
+
+.sube > * {
+  display: block;
+  translate: 0 108%;
+  animation: sube 1s var(--golpe) calc(var(--i, 0) * 90ms + var(--espera, 0ms)) forwards;
+}
+
+@keyframes sube {
+  to { translate: 0 0; }
+}
+
+.aparece {
+  opacity: 0;
+  animation: aparece 0.8s var(--suave) calc(var(--i, 0) * 90ms + var(--espera, 0ms)) forwards;
+}
+
+@keyframes aparece {
+  from { opacity: 0; translate: 0 1rem; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+/* ---------- Cambio de página: la nueva entra como una hoja desde abajo ---------- */
+@keyframes hoja-sale {
+  to { opacity: 0.4; translate: 0 -2.5rem; }
+}
+
+@keyframes hoja-entra {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0); }
+}
+
+::view-transition-old(root) {
+  animation: hoja-sale 0.55s var(--golpe) both;
+}
+
+::view-transition-new(root) {
+  animation: hoja-entra 0.55s var(--golpe) both;
+}
+
+/* ---------- Quien pide menos movimiento ve todo quieto ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  [data-revelar] {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}

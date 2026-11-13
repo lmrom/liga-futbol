@@ -1,0 +1,63 @@
+.cabeza__pie .mano {
+  color: var(--morado);
+}
+
+.pasos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--negro);
+}
+
+.pasos li {
+  display: grid;
+  grid-template-columns: clamp(3.5rem, 9vw, 8rem) 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem 0 1rem;
+  border-bottom: 2px solid var(--negro);
+}
+
+.pasos .rotulo {
+  font-size: clamp(3rem, 8vw, 7rem);
+  color: var(--naranja);
+}
+
+.pasos .parrafo {
+  max-width: 34ch;
+  font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.solicitud {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.solicitud a {
+  color: inherit;
+}
+
+.solicitud a.boton {
+  color: var(--negro);
+}
+
+.solicitud__lado {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: start;
+  align-content: end;
+}
+
+.solicitud__lado p {
+  margin: 0;
+}
+
+@media (min-width: 900px) {
+  .solicitud {
+    grid-template-columns: 1.4fr 1fr;
+    column-gap: 4vw;
+    align-items: end;
+  }
+}

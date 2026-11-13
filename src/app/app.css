@@ -1,0 +1,359 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1;
+}
+
+/* Administración y delegadas: su contenido empieza debajo de la barra y las pestañas */
+.principal--privada {
+  padding-top: calc(var(--alto-barra) + 3rem);
+}
+
+/* ---------- Telón de carga ---------- */
+.telon {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-content: space-between;
+  padding: var(--margen);
+  background: var(--naranja);
+  color: var(--negro);
+  transition: translate 0.85s var(--golpe);
+}
+
+.telon--fuera {
+  translate: 0 -100%;
+}
+
+.telon__lema {
+  text-align: right;
+}
+
+.telon__cuenta {
+  grid-column: 1 / -1;
+  justify-self: end;
+  font-size: clamp(5rem, 22vw, 20rem);
+  line-height: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Barra: sin caja, solo texto sobre el campo de color ---------- */
+.barra {
+  --letra: var(--negro);
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: var(--alto-barra);
+  padding-inline: var(--margen);
+  color: var(--letra);
+  pointer-events: none;
+  transition: color 0.3s, background 0.3s;
+}
+
+.barra > * {
+  pointer-events: auto;
+}
+
+.barra--clara {
+  --letra: var(--hueso);
+}
+
+.barra--solida {
+  background: var(--crema);
+  border-bottom: 2px solid var(--negro);
+}
+
+.barra a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.barra__marca {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-right: auto;
+}
+
+.barra__marca .rotulo {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.barra__marca sup {
+  top: -0.9em;
+  font-size: 0.4em;
+  letter-spacing: 0;
+}
+
+.barra__marca small {
+  font-size: 0.6875rem;
+  line-height: 1.15;
+}
+
+.barra__nav,
+.barra__lado {
+  display: none;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.barra__nav {
+  margin-right: auto;
+}
+
+/* Enlaces: al pasar el cursor se traza una línea; el activo va tachado en caja */
+.barra .mono:not(small) {
+  position: relative;
+  padding-block: 0.25rem;
+}
+
+.barra .mono:not(small)::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1.5px;
+  background: currentColor;
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 0.4s var(--golpe);
+}
+
+.barra .mono:not(small):hover::after,
+.barra .mono.activo::after {
+  scale: 1 1;
+}
+
+.barra .boton > span {
+  padding-block: 0.5rem 0.4rem;
+}
+
+.barra .boton > i {
+  width: 2.2rem;
+}
+
+/* Botón de menú: dos rayas inclinadas */
+.barra__menu {
+  display: grid;
+  gap: 0.4rem;
+  width: 2.75rem;
+  padding: 0.6rem 0;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+.barra__menu span {
+  display: block;
+  height: 3px;
+  background: currentColor;
+  transform: skewX(-30deg);
+  transition: translate 0.4s var(--golpe), rotate 0.4s var(--golpe), width 0.3s;
+}
+
+.barra__menu span:last-child {
+  width: 70%;
+  justify-self: end;
+}
+
+.barra--abierta {
+  --letra: var(--hueso);
+  background: none;
+  border-color: transparent;
+}
+
+.barra--abierta .barra__menu span:first-child { translate: 0 0.35rem; rotate: 45deg; transform: none; }
+.barra--abierta .barra__menu span:last-child { translate: 0 -0.35rem; rotate: -45deg; transform: none; width: 100%; }
+
+@media (min-width: 1000px) {
+  .barra__nav,
+  .barra__lado {
+    display: flex;
+  }
+
+  .barra__menu {
+    display: none;
+  }
+
+  .barra__marca {
+    margin-right: 3.5vw;
+  }
+}
+
+/* ---------- Pestañas de las secciones privadas ---------- */
+.pestanas {
+  position: fixed;
+  inset: var(--alto-barra) 0 auto 0;
+  z-index: 790;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: 3rem;
+  padding-inline: var(--margen);
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: var(--negro);
+  color: var(--hueso);
+  white-space: nowrap;
+}
+
+.pestanas a {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.7;
+}
+
+.pestanas a:hover,
+.pestanas a.activo {
+  opacity: 1;
+  color: var(--amarillo);
+}
+
+.pestanas__quien {
+  padding-right: 1.5rem;
+  border-right: 1.5px solid currentColor;
+  color: var(--amarillo);
+}
+
+/* ---------- Menú a pantalla completa ---------- */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: calc(var(--alto-barra) + 2rem) var(--margen) 2rem;
+  background: var(--morado);
+  color: var(--hueso);
+  translate: 0 -100%;
+  visibility: hidden;
+  transition: translate 0.7s var(--golpe), visibility 0s 0.7s;
+}
+
+.menu--abierto {
+  translate: 0 0;
+  visibility: visible;
+  transition: translate 0.7s var(--golpe);
+}
+
+.menu__lista {
+  display: grid;
+}
+
+.menu__lista a {
+  padding-block: 0.6rem;
+  border-bottom: 2px solid currentColor;
+  color: inherit;
+  /* "ENTRENAMIENTO" (13 letras anchas) debe caber en un celular de 320px */
+  font-size: clamp(1.5rem, 7.4vw, 4.5rem);
+  text-decoration: none;
+  opacity: 0;
+  translate: 0 2rem;
+  transition: opacity 0.4s, translate 0.6s var(--suave), color 0.2s;
+}
+
+.menu--abierto .menu__lista a {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: calc(var(--i) * 60ms + 250ms);
+}
+
+.menu__lista a.activo,
+.menu__lista a:hover {
+  color: var(--amarillo);
+}
+
+.menu__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* ---------- Pie ---------- */
+.pie {
+  padding-top: clamp(3.5rem, 8vw, 7rem);
+  overflow: hidden;
+}
+
+.pie a {
+  color: inherit;
+}
+
+.pie__arriba {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.pie__columnas {
+  display: grid;
+  gap: 2.5rem;
+  padding-block: 2rem clamp(2.5rem, 6vw, 5rem);
+}
+
+@media (min-width: 800px) {
+  .pie__columnas {
+    grid-template-columns: repeat(3, minmax(0, 15rem)) 1fr;
+  }
+}
+
+.pie__columnas > div {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+}
+
+.pie__columnas .titulillo {
+  margin-bottom: 0.4rem;
+  color: var(--tenue);
+}
+
+.pie__columnas a {
+  text-decoration: none;
+}
+
+.pie__columnas a:hover {
+  color: var(--amarillo);
+  text-decoration: underline wavy;
+}
+
+.pie__nota {
+  justify-self: end;
+  align-self: end;
+  color: var(--rosa);
+}
+
+/* El nombre, tan grande que se sale por abajo */
+.pie__gigante {
+  margin-bottom: -0.16em;
+  font-size: clamp(3.4rem, 17.6vw, 22rem);
+  line-height: 0.8;
+  color: var(--morado);
+}
+
+.pie__abajo {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  margin-inline: calc(var(--margen) * -1);
+  padding: 0.9rem var(--margen) 0.8rem;
+  background: var(--amarillo);
+  color: var(--negro);
+}

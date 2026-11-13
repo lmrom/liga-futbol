@@ -1,0 +1,58 @@
+.acceso {
+  display: grid;
+  gap: 3rem;
+  align-content: center;
+  min-height: 100svh;
+  padding-block: calc(var(--alto-barra) + 2rem) 3rem;
+}
+
+.acceso__texto {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.acceso__forma {
+  display: grid;
+  gap: 1.4rem;
+  justify-items: start;
+}
+
+.acceso__forma label {
+  display: grid;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+/* Solo una raya debajo, como un formulario en papel */
+.acceso__forma input {
+  width: 100%;
+  padding: 0.5rem 0;
+  border: 0;
+  border-bottom: 2px solid var(--tinta);
+  border-radius: 0;
+  background: transparent;
+  color: var(--tinta);
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.acceso__forma input:focus {
+  outline: none;
+  border-color: var(--amarillo);
+}
+
+.acceso__forma .boton {
+  border-color: var(--hueso);
+}
+
+.acceso__forma .fallo {
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  .acceso {
+    grid-template-columns: 1.3fr minmax(18rem, 26rem);
+    column-gap: 6vw;
+    align-items: end;
+  }
+}

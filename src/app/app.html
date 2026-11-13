@@ -1,56 +1,114 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-liga sticky-top">
-  <div class="container">
-    <a class="navbar-brand fw-bold" routerLink="/inicio">⚽ Liga Femenil</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="menu">
-      <ul class="navbar-nav ms-auto align-items-lg-center">
-        <li class="nav-item"><a class="nav-link" routerLink="/inicio" routerLinkActive="active">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/partidos" routerLinkActive="active">Partidos</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/clasificacion" routerLinkActive="active">Clasificación</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/entrenamiento" routerLinkActive="active">Entrenamiento</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/sobre-nosotros" routerLinkActive="active">Sobre Nosotros</a></li>
-
-        @if (!api.usuario()) {
-          <li class="nav-item"><a class="nav-link fw-bold" routerLink="/inscripcion" routerLinkActive="active">INSCRÍBETE A LA LIGA</a></li>
-          <li class="nav-item ms-lg-2"><a class="btn btn-outline-light btn-sm" routerLink="/login">Iniciar sesión</a></li>
-        }
-
-        <!-- Menú de la administradora -->
-        @if (api.usuario()?.rol === 'admin') {
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle fw-bold" href="#" data-bs-toggle="dropdown">Administración</a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" routerLink="/admin/partidos">Partidos y resultados</a></li>
-              <li><a class="dropdown-item" routerLink="/admin/temporadas">Temporadas</a></li>
-              <li><a class="dropdown-item" routerLink="/admin/catalogos">Canchas y árbitros</a></li>
-              <li><a class="dropdown-item" routerLink="/admin/delegados">Delegados y equipos</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" routerLink="/admin/contenido">Anuncios y multimedia</a></li>
-              <li><a class="dropdown-item" routerLink="/admin/entrenadores">Entrenadores</a></li>
-            </ul>
-          </li>
-        }
-
-        <!-- Menú de la delegada -->
-        @if (api.usuario()?.rol === 'delegado') {
-          <li class="nav-item"><a class="nav-link fw-bold" routerLink="/delegado/equipo" routerLinkActive="active">Mi equipo</a></li>
-          <li class="nav-item"><a class="nav-link fw-bold" routerLink="/delegado/jugadoras" routerLinkActive="active">Mis jugadoras</a></li>
-        }
-
-        @if (api.usuario()) {
-          <li class="nav-item ms-lg-2">
-            <button class="btn btn-outline-light btn-sm" (click)="salir()">Cerrar sesión ({{ api.usuario().nombre }})</button>
-          </li>
-        }
-      </ul>
-    </div>
+<!-- Telón de carga: campo naranja con contador (solo la primera visita de la pestaña) -->
+@if (telon()) {
+  <div class="telon" [class.telon--fuera]="telonFuera()" aria-hidden="true">
+    <span class="mono">Liga Mujeres Diversas — México</span>
+    <span class="mono telon__lema">Comunidad de mujeres<br>para mujeres<br>entre mujeres</span>
+    <span class="rotulo telon__cuenta">{{ cuenta() }}%</span>
   </div>
-</nav>
+}
 
-<router-outlet />
+<header class="barra" [class.barra--clara]="sobreOscuro() && !privada() && !menu()" [class.barra--solida]="privada()"
+        [class.barra--abierta]="menu()">
+  <a class="barra__marca" routerLink="/inicio" aria-label="Liga Mujeres Diversas México, inicio">
+    <span class="rotulo">LMD<sup>®</sup></span>
+    <small class="mono">Liga Mujeres<br>Diversas · MX</small>
+  </a>
 
-<footer class="text-center py-3 bg-light mt-auto">
-  <small>Liga de Fútbol Femenil — Comunidad de mujeres para mujeres entre mujeres</small>
+  <nav class="barra__nav" aria-label="Principal">
+    @for (e of enlaces; track e.ruta) {
+      <a class="mono" [routerLink]="e.ruta" routerLinkActive="activo">{{ e.texto }}</a>
+    }
+  </nav>
+
+  <div class="barra__lado">
+    @if (!api.usuario()) {
+      <a class="mono" routerLink="/login" routerLinkActive="activo">Entrar</a>
+      <a class="boton boton--amarillo" routerLink="/inscripcion"><span>Inscríbete</span><i></i></a>
+    }
+    <!-- Menú de la administradora -->
+    @if (api.usuario()?.rol === 'admin') {
+      <a class="mono" routerLink="/admin" routerLinkActive="activo">Administración</a>
+    }
+    <!-- Menú de la delegada -->
+    @if (api.usuario()?.rol === 'delegado') {
+      <a class="mono" routerLink="/delegado" routerLinkActive="activo">Mi equipo</a>
+    }
+    @if (api.usuario()) {
+      <button type="button" class="boton boton--hueso" (click)="salir()"><span>Salir</span><i></i></button>
+    }
+  </div>
+
+  <button type="button" class="barra__menu" (click)="alternarMenu()" [attr.aria-expanded]="menu()"
+          aria-controls="menu" [attr.aria-label]="menu() ? 'Cerrar menú' : 'Abrir menú'">
+    <span></span><span></span>
+  </button>
+</header>
+
+<!-- Pestañas de las secciones privadas -->
+@if (privada() && api.usuario(); as usuario) {
+  <nav class="pestanas" aria-label="Sección privada">
+    <span class="mono pestanas__quien">{{ usuario.nombre }}</span>
+    @for (e of usuario.rol === 'admin' ? enlacesAdmin : enlacesDelegada; track e.ruta) {
+      <a class="mono" [routerLink]="e.ruta" routerLinkActive="activo">{{ e.texto }}</a>
+    }
+  </nav>
+}
+
+<!-- Menú a pantalla completa (teléfono) -->
+<div id="menu" class="menu" [class.menu--abierto]="menu()" [attr.inert]="menu() ? null : ''">
+  <nav class="menu__lista" aria-label="Menú">
+    <a class="rotulo" routerLink="/inicio" [style.--i]="0">Inicio</a>
+    @for (e of enlaces; track e.ruta; let i = $index) {
+      <a class="rotulo" [routerLink]="e.ruta" routerLinkActive="activo" [style.--i]="i + 1">{{ e.texto }}</a>
+    }
+  </nav>
+  <div class="menu__pie">
+    @if (!api.usuario()) {
+      <a class="boton boton--amarillo" routerLink="/inscripcion"><span>Inscribe a tu equipo</span><i></i></a>
+      <a class="enlace" routerLink="/login">Entrar</a>
+    } @else {
+      <a class="boton boton--amarillo" [routerLink]="api.usuario().rol === 'admin' ? '/admin' : '/delegado'">
+        <span>{{ api.usuario().rol === 'admin' ? 'Administración' : 'Mi equipo' }}</span><i></i>
+      </a>
+      <button type="button" class="enlace" (click)="salir()">Cerrar sesión</button>
+    }
+  </div>
+</div>
+
+<main [class.principal--privada]="privada()">
+  <router-outlet />
+</main>
+
+<footer class="campo campo--negro pie">
+  <div class="pie__arriba">
+    <p class="parrafo parrafo--grande">No es solo una liga.<br>Más que fútbol es una comunidad.</p>
+    <a class="boton boton--amarillo" routerLink="/inscripcion"><span>Inscribe a tu equipo</span><i></i></a>
+  </div>
+
+  <div class="pie__columnas">
+    <div>
+      <p class="titulillo">La liga</p>
+      <a class="mono" routerLink="/partidos">Partidos</a>
+      <a class="mono" routerLink="/clasificacion">Clasificación</a>
+      <a class="mono" routerLink="/entrenamiento">Entrenamiento a domicilio</a>
+    </div>
+    <div>
+      <p class="titulillo">Comunidad</p>
+      <a class="mono" routerLink="/inicio" fragment="avisos">Avisos del mes</a>
+      <a class="mono" routerLink="/sobre-nosotros">Nosotras</a>
+      <a class="mono" routerLink="/inscripcion">Inscripción</a>
+    </div>
+    <div>
+      <p class="titulillo">Acceso</p>
+      <a class="mono" routerLink="/login">Administración y delegadas</a>
+    </div>
+    <p class="mano pie__nota">de mujeres,<br>para mujeres,<br>entre mujeres ♥</p>
+  </div>
+
+  <p class="rotulo pie__gigante" aria-hidden="true">Mujeres<br>Diversas</p>
+
+  <div class="pie__abajo mono">
+    <span>© {{ anio }} Liga Mujeres Diversas México</span>
+    <span>Comunidad de mujeres para mujeres entre mujeres</span>
+  </div>
 </footer>

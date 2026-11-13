@@ -1,0 +1,215 @@
+/* =====================================================================
+   PIEZAS de las páginas públicas
+   ===================================================================== */
+
+/* ---------- Botón: caja de texto + caja de flecha ----------
+   Al pasar el cursor la flecha sale por la derecha y entra otra por la izquierda. */
+.boton {
+  --b-fondo: var(--negro);
+  --b-texto: var(--hueso);
+  --b-flecha: var(--amarillo);
+  --b-flecha-texto: var(--negro);
+  display: inline-flex;
+  align-items: stretch;
+  border: 2px solid var(--negro);
+  background: var(--b-fondo);
+  color: var(--b-texto);
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: translate 0.25s var(--suave);
+}
+
+.boton > span {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1.1rem 0.7rem;
+}
+
+.boton > i {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  overflow: hidden;
+  border-left: 2px solid var(--negro);
+  background: var(--b-flecha);
+  color: var(--b-flecha-texto);
+  font-style: normal;
+  font-size: 1.1rem;
+}
+
+.boton > i::before,
+.boton > i::after {
+  content: '→';
+  grid-area: 1 / 1;
+  transition: translate 0.45s var(--golpe);
+}
+
+.boton > i::after {
+  translate: -220% 0;
+}
+
+.boton:hover > i::before,
+.boton:focus-visible > i::before {
+  translate: 220% 0;
+}
+
+.boton:hover > i::after,
+.boton:focus-visible > i::after {
+  translate: 0 0;
+}
+
+.boton:active {
+  translate: 0 2px;
+}
+
+.boton--amarillo { --b-fondo: var(--amarillo); --b-texto: var(--negro); --b-flecha: var(--negro); --b-flecha-texto: var(--amarillo); }
+.boton--hueso { --b-fondo: var(--hueso); --b-texto: var(--negro); --b-flecha: var(--naranja); }
+.boton--naranja { --b-fondo: var(--naranja); --b-texto: var(--negro); --b-flecha: var(--negro); --b-flecha-texto: var(--naranja); }
+
+.boton[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---------- Enlace de máquina de escribir: ▷ TEXTO subrayado ---------- */
+.enlace {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--f-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+}
+
+.enlace::before {
+  content: '▷';
+  display: inline-block;
+  font-size: 0.85em;
+  text-decoration: none;
+  transition: translate 0.3s var(--suave);
+}
+
+.enlace:hover {
+  color: inherit;
+  text-decoration-style: wavy;
+}
+
+.enlace:hover::before {
+  content: '▶';
+  translate: 0.25rem 0;
+}
+
+.enlace[aria-pressed='true'] {
+  text-decoration: none;
+  background: var(--tinta);
+  color: var(--fondo);
+  padding: 0.15rem 0.5rem;
+}
+
+/* ---------- Etiqueta con punto y regla debajo: "• REVENUE ————" ---------- */
+.titulillo {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  padding-bottom: 0.6rem;
+  border-bottom: 1.5px solid var(--regla);
+  font-family: var(--f-mono);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.titulillo::before {
+  content: '';
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  background: currentColor;
+  translate: 0 -0.08rem;
+}
+
+/* ---------- Sello de hule (PENALES 4–3, GANADORA) ---------- */
+.sello {
+  display: inline-block;
+  padding: 0.2rem 0.5rem 0.1rem;
+  border: 2px solid currentColor;
+  color: var(--naranja);
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  rotate: -3deg;
+}
+
+.sello--tinta {
+  color: var(--tinta);
+}
+
+/* ---------- Estados ---------- */
+.vacio {
+  margin: 0;
+  padding: 2rem 0;
+  border-block: 1.5px dashed var(--regla);
+  font-family: var(--f-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.fallo {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  border: 2px solid var(--negro);
+  background: var(--naranja);
+  color: var(--negro);
+  font-family: var(--f-mono);
+  font-size: 0.875rem;
+}
+
+/* Barra que late mientras llegan los datos */
+.cargando {
+  height: 0.5rem;
+  background: repeating-linear-gradient(90deg, var(--tinta) 0 1.25rem, transparent 1.25rem 2.5rem);
+  background-size: 2.5rem 100%;
+  animation: cargando 0.6s linear infinite;
+}
+
+@keyframes cargando {
+  to { background-position: 2.5rem 0; }
+}
+
+/* ---------- Selector de temporada ---------- */
+.selector {
+  appearance: none;
+  padding: 0.55rem 2.4rem 0.45rem 0.8rem;
+  border: 2px solid var(--tinta);
+  border-radius: 0;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z'/%3E%3C/svg%3E")
+    no-repeat right 0.8rem center / 0.65rem;
+  color: var(--tinta);
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}

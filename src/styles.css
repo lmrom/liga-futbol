@@ -1,33 +1,10 @@
-/* Estilos globales de la Liga Femenil */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-
-:root {
-  /* Colores de la liga */
-  --liga-morado: #7b1fa2;
-  --liga-rosa: #e91e63;
-
-  /* Fuente global (Bootstrap la usa en todo el body) */
-  --bs-body-font-family: 'Poppins', sans-serif;
-}
-
-/* Clases de color reutilizables junto con Bootstrap */
-.bg-liga {
-  background-color: var(--liga-morado) !important;
-}
-
-.bg-liga-gradiente {
-  background: linear-gradient(135deg, var(--liga-morado), var(--liga-rosa));
-}
-
-.text-liga {
-  color: var(--liga-morado) !important;
-}
-
-.btn-liga {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: var(--liga-morado);
-  --bs-btn-border-color: var(--liga-morado);
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: var(--liga-rosa);
-  --bs-btn-hover-border-color: var(--liga-rosa);
-}
+/* Estilos globales de la Liga Mujeres Diversas México
+   base.css            colores planos, tipografía, textura de papel
+   piezas.css          botón, enlaces, etiquetas, reglas (páginas públicas)
+   movimiento.css      entradas al hacer scroll, cambio de página
+   bootstrap-piel.css  viste Bootstrap con el mismo lenguaje (administración) */
+@import './styles/base.css';
+@import './styles/piezas.css';
+@import './styles/paginas.css';
+@import './styles/movimiento.css';
+@import './styles/bootstrap-piel.css';

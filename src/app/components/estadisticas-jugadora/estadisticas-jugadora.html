@@ -1,59 +1,31 @@
-<div class="row g-3 text-center mb-4">
-  <div class="col-6 col-md">
-    <div class="card shadow-sm border-0 h-100"><div class="card-body">
-      <div class="fs-2 fw-bold text-liga">{{ stats().partidos }}</div><small class="text-muted">Partidos</small>
-    </div></div>
-  </div>
-  <div class="col-6 col-md">
-    <div class="card shadow-sm border-0 h-100"><div class="card-body">
-      <div class="fs-2 fw-bold text-liga">{{ stats().titular }}</div><small class="text-muted">De titular</small>
-    </div></div>
-  </div>
-  <div class="col-6 col-md">
-    <div class="card shadow-sm border-0 h-100"><div class="card-body">
-      <div class="fs-2 fw-bold text-liga">{{ stats().minutos }}'</div><small class="text-muted">Minutos jugados</small>
-    </div></div>
-  </div>
-  <div class="col-6 col-md">
-    <div class="card shadow-sm border-0 h-100"><div class="card-body">
-      <div class="fs-2 fw-bold text-liga">⚽ {{ stats().goles }}</div><small class="text-muted">Goles</small>
-    </div></div>
-  </div>
-  @if (stats().portera) {
-    <div class="col-6 col-md">
-      <div class="card shadow-sm border-0 h-100"><div class="card-body">
-        <div class="fs-2 fw-bold text-liga">🧤 {{ stats().atajadas }}</div><small class="text-muted">Atajadas</small>
-      </div></div>
+<dl class="datos">
+  @for (d of datos(); track d.texto) {
+    <div class="dato" [class]="d.tono ? 'dato dato--' + d.tono : 'dato'">
+      <dt class="mono">{{ d.texto }}</dt>
+      <dd class="rotulo" [style.--cifras]="('' + d.valor).length" [appContador]="d.valor" [duracion]="900">0</dd>
     </div>
   }
-  <div class="col-6 col-md">
-    <div class="card shadow-sm border-0 h-100"><div class="card-body">
-      <div class="fs-2 fw-bold text-secondary">{{ stats().faltas }}</div><small class="text-muted">Faltas</small>
-    </div></div>
-  </div>
-  <div class="col-6 col-md">
-    <div class="card shadow-sm border-0 h-100"><div class="card-body">
-      <div class="fs-2 fw-bold text-warning">{{ stats().amarillas }}</div><small class="text-muted">Amarillas</small>
-    </div></div>
-  </div>
-  <div class="col-6 col-md">
-    <div class="card shadow-sm border-0 h-100"><div class="card-body">
-      <div class="fs-2 fw-bold text-danger">{{ stats().rojas }}</div><small class="text-muted">Rojas</small>
-    </div></div>
-  </div>
-</div>
+</dl>
 
-<h5 class="fw-bold">Equipos</h5>
-<table class="table table-sm align-middle">
-  <thead class="table-dark"><tr><th>Temporada</th><th>Equipo</th><th>Dorsal</th><th>Posición</th></tr></thead>
-  <tbody>
-    @for (e of stats().equipos; track $index) {
+<h3 class="titulillo equipos__titulo">Equipos</h3>
+<div class="tabla-caja">
+  <table class="tabla">
+    <thead>
       <tr>
-        <td>{{ e.temporada }}</td>
-        <td class="fw-bold">{{ e.equipo }} @if (e.fecha_baja) { <span class="badge text-bg-secondary">Baja</span> }</td>
-        <td>{{ e.dorsal ?? '—' }}</td>
-        <td>{{ e.posicion ?? '—' }}</td>
+        <th class="izq">Temporada</th><th class="izq">Equipo</th>
+        @if (!publico()) { <th>Playera</th> }
+        <th>Posición</th>
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @for (e of stats().equipos; track $index) {
+        <tr>
+          <td class="izq mono">{{ e.temporada }}</td>
+          <td class="izq equipo">{{ e.equipo }} @if (e.fecha_baja) { <span class="sello sello--tinta">Baja</span> }</td>
+          @if (!publico()) { <td>{{ e.dorsal ?? '—' }}</td> }
+          <td class="mono">{{ e.posicion ?? '—' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

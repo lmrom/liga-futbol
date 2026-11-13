@@ -1,50 +1,71 @@
-<section class="bg-liga-gradiente text-white text-center py-5">
-  <div class="container">
-    <h2 class="display-6 fw-bold">Acondicionamiento físico personalizado</h2>
-    <p class="lead mb-0">Entrenadores especialistas que van a tu domicilio. Elige el tuyo y contáctalo directamente.</p>
+<section class="campo campo--naranja campo--cabeza cabeza">
+  <p class="titulillo aparece">Servicio adicional · a domicilio</p>
+  <h1 class="rotulo rotulo--xl"><span class="sube"><span>Entrena</span></span></h1>
+  <div class="cabeza__pie aparece" [style.--i]="2">
+    <p class="parrafo">
+      Acondicionamiento físico personalizado y a domicilio. Elige a tu especialista y contáctala directamente.
+    </p>
+    <span class="mano">tú pones<br>el horario</span>
   </div>
 </section>
 
-<div class="container py-5">
-  <div class="row g-4">
-    @for (e of entrenadores(); track e.id) {
-      <div class="col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm border-0">
-          @if (e.foto_url) {
-            <div class="ratio ratio-16x9">
-              <img [src]="'/api/' + e.foto_url" class="card-img-top object-fit-cover" [alt]="e.nombre">
-            </div>
-          } @else {
-            <div class="ratio ratio-16x9 bg-liga rounded-top">
-              <div class="d-flex align-items-center justify-content-center text-white display-3 fw-bold">
-                {{ iniciales(e.nombre) }}
-              </div>
-            </div>
-          }
-          <div class="card-body d-flex flex-column">
-            <span class="badge bg-liga align-self-start mb-2">{{ e.especialidad }}</span>
-            <h5 class="card-title fw-bold mb-1">{{ e.nombre }}</h5>
-            @if (e.zona) { <small class="text-muted mb-2">🏠 A domicilio · {{ e.zona }}</small> }
-            <p class="card-text">{{ e.descripcion }}</p>
-            <div class="mb-3">
-              @for (c of e.listaCualidades; track c) {
-                <span class="badge rounded-pill text-bg-light border me-1 mb-1">✓ {{ c }}</span>
-              }
-            </div>
-            @if (e.precio) { <p class="fs-5 fw-bold text-liga mt-auto">{{ e.precio }}</p> }
-            <div class="d-grid gap-2" [class.mt-auto]="!e.precio">
-              @if (e.telefono) {
-                <a class="btn btn-success" [href]="whatsapp(e)" target="_blank" rel="noopener">Contactar por WhatsApp</a>
-              }
-              @if (e.correo) {
-                <a class="btn btn-outline-secondary" [href]="'mailto:' + e.correo">Enviar correo</a>
-              }
-            </div>
+<section class="campo campo--crema campo--aire" [class.con-barra]="elegida()">
+  @if (error()) {
+    <p class="fallo" role="alert">{{ error() }}</p>
+  } @else if (cargando()) {
+    <div class="cargando" role="status"><span class="solo-lectores">Cargando especialistas…</span></div>
+  } @else {
+    <ol class="fichas">
+      @for (e of entrenadores(); track e.id) {
+        <li class="ficha" [class.ficha--elegida]="elegida()?.id === e.id" appRevelar="izquierda" [orden]="$index">
+          <div class="ficha__foto">
+            @if (e.foto_url) {
+              <img [src]="'/api/' + e.foto_url" [alt]="e.nombre" loading="lazy">
+            } @else {
+              <span class="rotulo" aria-hidden="true">{{ iniciales(e.nombre) }}</span>
+            }
+            <span class="mono ficha__numero">({{ $index + 1 }})</span>
           </div>
-        </div>
-      </div>
-    } @empty {
-      <p class="text-muted">Pronto tendremos entrenadores disponibles.</p>
-    }
-  </div>
-</div>
+
+          <div class="ficha__cuerpo">
+            <p class="mono">{{ e.especialidad }}</p>
+            <h2 class="rotulo rotulo--m">{{ e.nombre }}</h2>
+            @if (e.descripcion) { <p class="parrafo">{{ e.descripcion }}</p> }
+            @if (e.listaCualidades.length) {
+              <ul class="ficha__cualidades mono">
+                @for (c of e.listaCualidades; track c) { <li>{{ c }}</li> }
+              </ul>
+            }
+          </div>
+
+          <div class="ficha__lado">
+            @if (e.precio) { <p class="ficha__precio">{{ e.precio }}</p> }
+            @if (e.zona) { <p class="mono">A domicilio · {{ e.zona }}</p> }
+            <button type="button" class="boton" [class.boton--amarillo]="elegida()?.id === e.id"
+                    [attr.aria-pressed]="elegida()?.id === e.id" (click)="elegir(e)">
+              <span>{{ elegida()?.id === e.id ? 'Elegida' : 'Elegir' }}</span><i></i>
+            </button>
+          </div>
+        </li>
+      } @empty {
+        <li class="vacio">Pronto tendremos especialistas disponibles.</li>
+      }
+    </ol>
+  }
+</section>
+
+<!-- Barra de contacto de la especialista elegida -->
+@if (elegida(); as e) {
+  <aside class="contacto" role="status">
+    <p><span class="mono">Elegiste a</span> <strong class="rotulo rotulo--s">{{ e.nombre }}</strong></p>
+    <div class="contacto__acciones">
+      @if (e.telefono) {
+        <a class="boton boton--amarillo" [href]="whatsapp(e)" target="_blank" rel="noopener noreferrer"><span>WhatsApp</span><i></i></a>
+      }
+      @if (e.correo) {
+        <a class="boton boton--hueso" [href]="'mailto:' + e.correo"><span>Correo</span><i></i></a>
+      }
+      <button type="button" class="enlace" (click)="elegida.set(null)">Cambiar</button>
+    </div>
+  </aside>
+}

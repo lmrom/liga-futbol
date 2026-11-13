@@ -1,0 +1,238 @@
+/* =====================================================================
+   PIEL DE BOOTSTRAP
+   Las pantallas de administración y de delegadas siguen escritas con clases
+   de Bootstrap. Aquí se les cambia el aspecto (no el HTML) para que hablen
+   el mismo lenguaje que el sitio público: esquinas rectas, reglas negras,
+   etiquetas en máquina de escribir, sin sombras ni degradados.
+   ===================================================================== */
+:root {
+  --bs-body-font-family: var(--f-texto);
+  --bs-body-bg: var(--crema);
+  --bs-body-color: var(--negro);
+  --bs-border-color: var(--negro);
+  --bs-border-radius: 0;
+  --bs-border-radius-sm: 0;
+  --bs-border-radius-lg: 0;
+  --bs-border-radius-pill: 0;
+  --bs-link-color-rgb: 19, 18, 17;
+  --bs-link-hover-color-rgb: 255, 90, 31;
+  --bs-secondary-color: rgba(19, 18, 17, 0.62);
+  --bs-light-rgb: 247, 243, 234;
+
+  /* Colores de la liga que ya usaban las plantillas */
+  --liga-morado: var(--morado);
+  --liga-rosa: var(--naranja);
+}
+
+/* Títulos de página: <h2 class="fw-bold text-liga"> */
+h2.text-liga,
+h3.text-liga,
+h4.text-liga {
+  font-family: var(--f-rotulo);
+  font-stretch: 125%;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--negro) !important;
+}
+
+h2.text-liga {
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.text-liga { color: var(--morado) !important; }
+.bg-liga { background-color: var(--negro) !important; }
+.bg-liga-gradiente { background: var(--morado) !important; }
+.shadow-sm, .shadow { box-shadow: none !important; }
+.text-muted { color: rgba(19, 18, 17, 0.62) !important; }
+.rounded-pill, .rounded-top { border-radius: 0 !important; }
+
+/* ---------- Tarjetas ---------- */
+.card {
+  --bs-card-bg: var(--hueso);
+  --bs-card-border-color: var(--negro);
+  --bs-card-border-width: 2px;
+  --bs-card-border-radius: 0;
+  --bs-card-inner-border-radius: 0;
+  border: 2px solid var(--negro) !important;
+}
+
+.card-header {
+  padding: 0.7rem 1rem 0.55rem;
+  border-bottom: 2px solid var(--negro);
+  font-family: var(--f-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.card-header.bg-liga {
+  color: var(--amarillo) !important;
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  --bs-btn-border-radius: 0;
+  --bs-btn-border-width: 2px;
+  --bs-btn-font-family: var(--f-mono);
+  --bs-btn-font-size: 0.8125rem;
+  --bs-btn-font-weight: 700;
+  --bs-btn-padding-y: 0.55rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.btn-sm {
+  --bs-btn-font-size: 0.75rem;
+  --bs-btn-padding-y: 0.3rem;
+}
+
+.btn-liga,
+.btn-primary {
+  --bs-btn-color: var(--hueso);
+  --bs-btn-bg: var(--negro);
+  --bs-btn-border-color: var(--negro);
+  --bs-btn-hover-color: var(--negro);
+  --bs-btn-hover-bg: var(--amarillo);
+  --bs-btn-hover-border-color: var(--negro);
+  --bs-btn-active-color: var(--negro);
+  --bs-btn-active-bg: var(--amarillo);
+  --bs-btn-active-border-color: var(--negro);
+  --bs-btn-disabled-bg: var(--negro);
+  --bs-btn-disabled-border-color: var(--negro);
+}
+
+.btn-outline-secondary,
+.btn-light {
+  --bs-btn-color: var(--negro);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--negro);
+  --bs-btn-hover-color: var(--hueso);
+  --bs-btn-hover-bg: var(--negro);
+  --bs-btn-hover-border-color: var(--negro);
+  --bs-btn-active-bg: var(--negro);
+  --bs-btn-active-border-color: var(--negro);
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--negro);
+  --bs-btn-border-color: var(--negro);
+  --bs-btn-hover-color: var(--negro);
+  --bs-btn-hover-bg: var(--naranja);
+  --bs-btn-hover-border-color: var(--negro);
+}
+
+.btn-success {
+  --bs-btn-color: var(--hueso);
+  --bs-btn-bg: var(--verde);
+  --bs-btn-border-color: var(--negro);
+  --bs-btn-hover-bg: var(--negro);
+  --bs-btn-hover-border-color: var(--negro);
+}
+
+/* ---------- Formularios ---------- */
+.form-label {
+  margin-bottom: 0.25rem;
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.form-control,
+.form-select {
+  border: 2px solid var(--negro);
+  border-radius: 0;
+  background-color: var(--hueso);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--negro);
+  background-color: #fff;
+  box-shadow: 4px 4px 0 var(--amarillo);
+}
+
+.form-check-input {
+  border: 2px solid var(--negro);
+  border-radius: 0 !important;
+}
+
+.form-check-input:checked {
+  background-color: var(--negro);
+  border-color: var(--negro);
+}
+
+/* ---------- Tablas ---------- */
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: var(--negro);
+  --bs-table-striped-bg: rgba(19, 18, 17, 0.045);
+  --bs-table-hover-bg: var(--amarillo);
+  border-top: 2px solid var(--negro);
+  border-bottom: 2px solid var(--negro);
+}
+
+.table > thead.table-dark {
+  --bs-table-bg: var(--negro);
+  --bs-table-color: var(--hueso);
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.table > thead th {
+  font-weight: 400;
+}
+
+/* ---------- Avisos, etiquetas y listas ---------- */
+.alert {
+  --bs-alert-border-radius: 0;
+  --bs-alert-color: var(--negro);
+  border: 2px solid var(--negro);
+  font-family: var(--f-mono);
+  font-size: 0.875rem;
+}
+
+.alert-success { --bs-alert-bg: #c9ecd3; }
+.alert-danger { --bs-alert-bg: var(--naranja); }
+.alert-warning { --bs-alert-bg: var(--amarillo); }
+.alert-info { --bs-alert-bg: var(--rosa); }
+
+.badge {
+  --bs-badge-border-radius: 0;
+  --bs-badge-font-weight: 700;
+  font-family: var(--f-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge.bg-liga,
+.badge.text-bg-secondary {
+  background: var(--negro) !important;
+  color: var(--hueso) !important;
+}
+
+.badge.text-bg-success { background: var(--verde) !important; }
+.badge.text-bg-warning { background: var(--amarillo) !important; color: var(--negro) !important; }
+.badge.text-bg-danger { background: var(--naranja) !important; color: var(--negro) !important; }
+
+.list-group {
+  --bs-list-group-bg: transparent;
+  --bs-list-group-border-color: var(--negro);
+  --bs-list-group-border-radius: 0;
+}
+
+.nav-tabs {
+  --bs-nav-tabs-border-color: var(--negro);
+  --bs-nav-tabs-border-radius: 0;
+  --bs-nav-tabs-link-active-bg: var(--negro);
+  --bs-nav-tabs-link-active-color: var(--amarillo);
+  --bs-nav-link-color: var(--negro);
+  font-family: var(--f-mono);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+}
